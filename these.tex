@@ -14,10 +14,12 @@
 \usepackage{microtype}
 \usepackage{varioref}
 %\usepackage[xindy,quiet]{imakeidx}
-%\usepackage[autostyle]{csquotes}
-%\usepackage[backend=biber,safeinputenc]{biblatex}
+\usepackage[autostyle]{csquotes}
+\usepackage[style=apa,backend=biber,safeinputenc]{biblatex}
 \usepackage{hyperref}
-%\usepackage[xindy,acronyms,symbols]{glossaries}
+\usepackage[xindy,acronyms,symbols]{glossaries}
+\usepackage{graphicx}
+
 %
 % (Facultatif) Génération de l'index (obligatoire si un package d'index, par
 % exemple « imakeidx », est chargé)
@@ -25,17 +27,17 @@
 %
 % (Facultatif) Spécification de la ou des ressources bibliographiques
 % (obligatoire si le package « biblatex » est chargé)
-% \addbibresource{auxiliaires/bibliographie.bib}
-% \addbibresource{auxiliaires/}
+\addbibresource{auxiliaires/references.bib}
+\addbibresource{auxiliaires/}
 %
 % (Facultatif) Génération du glossaire (obligatoire si le package « glossaries »
 % est chargé)
-% \makeglossaries
+\makeglossaries
 %
 % (Facultatif) Configuration des styles du glossaire et de la liste d'acronymes
 % (à n'utiliser que si le package « glossaries » est chargé)
-% \setglossarystyle{indexhypergroup}
-% \setacronymstyle{long-sc-short}
+\setglossarystyle{indexhypergroup}
+\setacronymstyle{long-sc-short}
 %
 % (Facultatif) Spécification de la ou des ressources terminologiques
 % \loadglsentries{auxiliaires/}
@@ -104,11 +106,11 @@
 % (Facultatif) Liste des symboles
 % \printsymbols
 %
-% (Facultatif) Chapitre d'avant-propos
-% \include{liminaires/avant-propos}
 %
 % Sommaire
-\tableofcontents[depth=chapter,name=Sommaire]
+\tableofcontents[depth=subsubsection,name=Sommaire]
+% (Facultatif) Chapitre de résumé long
+\include{corps/resume}
 %
 % (Facultatif) Table des figures
 \listoffigures
@@ -116,6 +118,11 @@
 % (Facultatif) Liste des tableaux
 \listoftables
 %
+\include{liminaires/glossaries}
+% (Facultatif) Glossaire (si souhaité distinct de la liste des acronymes) :
+% \printglossary[type=\acronymtype]
+\printglossary
+% \include{liminaires/abbreviations}
 % (Facultatif) Liste des acronymes
 % \printacronyms
 %
@@ -123,10 +130,12 @@
 % chargé)
 % \lstlistoflistings
 %
+
+% (Facultatif) Chapitre d'avant-propos
+\include{liminaires/avant-propos}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Début de la partie principale (du « corps ») de la thèse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\include{corps/resume}
 \mainmatter
 % Chapitre d'introduction (générale)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,33 +149,41 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Première partie éventuelle
-% \part{...}
+\part{INTRODUCTION}
 %
 % Premier chapitre
-% \include{corps/}
+\include{corps/chap1}
 %
 % Deuxième chapitre
-% \include{corps/}
+\include{corps/chap2}
 %
 % Troisième chapitre
-% \include{corps/}
+\include{corps/chap3}
 %
 %
 % Deuxième partie éventuelle
-% \part{...}
+\part{CONTRIBUTIONS}
 %
 % Quatrième chapitre
-% \include{corps/}
+\include{corps/chap4}
 %
 % Cinquième chapitre
-% \include{corps/}
+\include{corps/chap5}
 %
 % Sixième chapitre
-% \include{corps/}
+\include{corps/chap6}
+%
+% Septième chapitre
+\include{corps/chap7}
+
+% Troisième partie éventuelle
+\part{DISCUSSIONS}
+% Huitième chapitre
+\include{corps/chap8}
 %
 % Chapitre  de conclusion (générale)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\include{corps/conclusion}
+%\include{corps/conclusion}
 %
 % Liste des références bibliographiques
 \printbibliography
@@ -187,8 +204,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \backmatter
 %
-% (Facultatif) Glossaire (si souhaité distinct de la liste des acronymes) :
-% \printglossary
 %
 % (Facultatif) Index :
 % \printindex
