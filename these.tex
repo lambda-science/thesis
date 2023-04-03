@@ -1,5 +1,6 @@
 % Document de classe yathesis
-\documentclass{yathesis}
+\documentclass[colophon-location=nowhere]{yathesis}
+
 %
 % Chargement manuel de packages (pas déjà chargés par la classe yathesis)
 \usepackage[T1]{fontenc}
@@ -8,6 +9,7 @@
 \usepackage{booktabs}
 \usepackage{siunitx}
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.18} 
 \usepackage{caption}
 \usepackage{microtype}
 \usepackage{varioref}
@@ -46,6 +48,7 @@
 % automatiquement importé par la classe yathesis.
 %
 % Importation manuelle du fichier de macros personnelles
+\DeclareUnicodeCharacter{2009}{\,}
 \input{configuration/macros}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,20 +76,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % (Facultatif) Production de la page de clause de non-responsabilité
-\makedisclaimer
+% \makedisclaimer
 %
 % (Facultatif) Production de la page de mots clés
-\makekeywords
+% \makekeywords
 %
 % (Facultatif) Production de la page affichant les logo, nom et coordonnées du
 % ou des laboratoires (ou unités de recherche) où la thèse a été préparée
-\makelaboratory
+% \makelaboratory
 %
 % (Facultatif) Dédicace(s)
-\input{liminaires/dedicaces}
+% \input{liminaires/dedicaces}
 %
 % (Facultatif) Épigraphe(s)
-\input{liminaires/epigraphes}
+% \input{liminaires/epigraphes}
 %
 % Résumés succincts
 \input{liminaires/resumes}
@@ -96,9 +99,7 @@
 %
 % (Facultatif) Chapitre d'avertissement
 % \include{liminaires/avertissement}
-%
-% (Facultatif) Liste des acronymes
-% \printacronyms
+
 %
 % (Facultatif) Liste des symboles
 % \printsymbols
@@ -109,11 +110,14 @@
 % Sommaire
 \tableofcontents[depth=chapter,name=Sommaire]
 %
+% (Facultatif) Table des figures
+\listoffigures
+%
 % (Facultatif) Liste des tableaux
 \listoftables
 %
-% (Facultatif) Table des figures
-\listoffigures
+% (Facultatif) Liste des acronymes
+% \printacronyms
 %
 % (Facultatif) Table des listings (nécessite que le package « listings » soit
 % chargé)
@@ -122,11 +126,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Début de la partie principale (du « corps ») de la thèse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{corps/resume}
 \mainmatter
+% Chapitre d'introduction (générale)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %
 % Chapitre d'introduction (générale)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\include{corps/introduction}
+% \include{corps/introduction}
 %
 % Chapitres ordinaires (avec parties éventuelles)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,15 +169,15 @@
 \include{corps/conclusion}
 %
 % Liste des références bibliographiques
-%\printbibliography
+\printbibliography
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Début de la partie annexe éventuelle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \appendix
+\appendix
 %
 % Premier chapitre annexe (éventuel)
-% \include{annexes/annexeI}
+\include{annexes/annexeI}
 %
 % Deuxième chapitre annexe (éventuel)
 % \include{annexes/annexeII}
@@ -177,7 +185,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Début de la partie finale
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\backmatter
+% \backmatter
 %
 % (Facultatif) Glossaire (si souhaité distinct de la liste des acronymes) :
 % \printglossary
@@ -186,7 +194,7 @@
 % \printindex
 %
 % Table des matières
-\tableofcontents
+%\tableofcontents
 %
 % (Facultatif) Production de la 4e de couverture :
 \makebackcover
