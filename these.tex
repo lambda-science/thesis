@@ -1,8 +1,5 @@
 % Document de classe yathesis
-\documentclass[colophon-location=nowhere]{yathesis}
-
-%
-% Chargement manuel de packages (pas déjà chargés par la classe yathesis)
+\documentclass[colophon-location=nowhere, output=screen, secnumdepth=subsubsection]{yathesis}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{kpfonts}
@@ -59,6 +56,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Caractéristiques du document
@@ -72,6 +70,7 @@
 % Production des pages de couverture et de titre
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \maketitle
+
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Début de la partie liminaire de la thèse
@@ -150,35 +149,20 @@
 %
 % Première partie éventuelle
 \part{INTRODUCTION}
-%
-% Premier chapitre
 \include{corps/chap1}
-%
-% Deuxième chapitre
 \include{corps/chap2}
-%
-% Troisième chapitre
 \include{corps/chap3}
-%
-%
-% Deuxième partie éventuelle
+
+\part{MATÉRIELS ET MÉTHODES}
+\include{corps/matetmet}
+
 \part{CONTRIBUTIONS}
-%
-% Quatrième chapitre
 \include{corps/chap4}
-%
-% Cinquième chapitre
 \include{corps/chap5}
-%
-% Sixième chapitre
 \include{corps/chap6}
-%
-% Septième chapitre
 \include{corps/chap7}
 
-% Troisième partie éventuelle
 \part{DISCUSSIONS}
-% Huitième chapitre
 \include{corps/chap8}
 %
 % Chapitre  de conclusion (générale)
