@@ -122,7 +122,7 @@ Pour cet exemple d'utilisation nous avons généré un rapport factice de patien
   \label{fig:factice_report}
 \end{figure}
 
-Les  résultats de l'extraction d'information présentés dans le tableau \ref{tab:json_data} montrent que le modèle d'\textit{OpenAI} GPT-3.5 est capable d'extraire l'ensemble des informations demandée de manière satisfaisantes tout en étant capable de détecter l'absence de certaines informations. Concernant le modèle \textit{Vicuna7B}, qui a l'avantage d'être auto-hébergé et donc d'être utilisable pour des données sensibles, les performances sont moindres. En effet, six données sur treize (diagnostic et anomalies) demandées sont tout simplement manquante dans le JSON de sortie. Cependant pour les sept données (nom, age, dates, muscle et numéro de biopsie) présente, les résultats sont satisfaisant, le modèle a extrait les bonne informations.
+Les  résultats de l'extraction d'information présentés dans le tableau \ref{tab:json_data} montrent que le modèle d'\textit{OpenAI} GPT-3.5 est capable d'extraire l'ensemble des informations demandée de manière satisfaisantes tout e    n étant capable de détecter l'absence de certaines informations. Concernant le modèle \textit{Vicuna7B}, qui a l'avantage d'être auto-hébergé et donc d'être utilisable pour des données sensibles, les performances sont moindres. En effet, six données sur treize (diagnostic et anomalies) demandées sont tout simplement manquante dans le JSON de sortie. Cependant pour les sept données (nom, age, dates, muscle et numéro de biopsie) présente, les résultats sont satisfaisant, le modèle a extrait les bonne informations.
 
 Il est important de noter qu'en terme de ressources de calcul et de temps de d'inférence, \textit{GPT-3.5} possède un avantage non-négligeable car ce modèle n'est accessible que par une \gls{api}. Les coûts de calcul pour l'application sont donc nul et la requête ne prend que quelques secondes à être réalisée. Pour \textit{Vicuna}, le modèle auto-hébergé, chaque requête requiert une quantité importante de ressources de calcul et monopolise ces ressources pour un temps important (environ 1min30 par document). Ces coûts en ressources et temps de calcul couplé à une précision plus faible, rendent difficile l'exploitation de modèle \gls{llms} génératif auto-hébergé pour la tâche d'extraction d'informations à travers une interface en ligne.
 \begin{table}[ht]
@@ -204,7 +204,7 @@ Openai FR MLPC & 0.6377 & 0.6 & 0.6345 & 0.6128 & 0.5385 \\ \hline
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{figures/histo_myoclassify.png}
-  \caption[Histogrammes de performance des modèles MyoClassify]{Histogrammes de performance des modèles MyoClassify pour le score F1 macro (gauche) et le score F1 pour la classe des CNM uniquement}
+  \caption[Histogrammes de performance des modèles MyoClassify]{Histogrammes de performance des modèles MyoClassify pour le score F1 macro (haut) et le score F1 pour la classe des CNM uniquement (bas)}
   \label{fig:myoclassify_histo}
 \end{figure}
 \begin{figure}[htbp]
@@ -221,14 +221,19 @@ De plus, il est à noter que pour la classe minoritaire (les \gls{cnm} avec 16 r
 En terme de performance brute, il semble recommandable de: (i) traduire les compte-rendus en anglais, (ii) d'utiliser le modèle d'OpenAI pour l'\textit{embedding} et (iii) d'entrainer un perceptron multi-couche pour apprendre à différencer les diagnostic en fonction des \textit{embeddings} des rapports. 
 
 \section{MyoSearch: un moteur de recherche de patients}
-L'\textit{embeddings} permet de représenter un texte sous forme numérique en capturant son sens sémantique. Il est alors possible de calculer un score de similarité 
-\subsection{Ingestion: création de la base de données des données}
+L'\textit{embeddings} permet de représenter un texte sous forme numérique en capturant son sens sémantique. Il est alors possible de calculer un score de similarité entre une requête en texte libre et une masse de documents pour trouver le document le plus proche. Avec MyoSearch nous avons créer un outil qui permet de faire des requête en texte libre parmi l'ensemble des rapports de biopsies de patients disponibles. Il est alors possible de chercher rapidement chez quels patients un symptome en particulier est présent ou un diagnostic ou un gène muté. Cette création de moteur de recherche est totalement automatique et ne nécessite aucun travail d'annotation. Elle se déroule en deux phases: (i) l'ingestion des données pour constituer la base de données puis (ii) la phase de requêtage de la base de données en fonction de l'entrée de l'utilisateur.
+
+\subsection{Ingestion des rapports: création de la base de données de vecteurs}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{figures/myosearch_ingest.png}
   \caption[Ingestion des données dans MyoSearch]{Schéma de l'ingestion des données pour le moteur de recherche MyoSearch}
   \label{fig:myoclassify_conf}
 \end{figure}
+A la différence de MyoClassify, cette fois ci nous ne voulons pas générer 1 \textit{embedding} par document mais plutôt séparer les documents en fragments et avoir un \textit{embedding} par fragment de document. Nous avons choisis de fragmenter les documents en fragment de le taille d'une phrase et ainsi d'obtenir un \textit{embedding} pour chaque phrase du document. Ceci permet d'obtenir de meilleur résultat lors du requêtage de la base de données car le sens sémantique de chaque phrase va pouvoir être comparé à la requête, plutôt que la moyenne de l'ensemble du document.
+
+Pour cela nous avons d'abord détecté le texte des rapport PDF par \gls{ocr}. Comme cette détection est hétérogène et bruitée, il est difficile de trouver les bornes exact des phrases. Donc nous avons fragmenter le contenu en fragment de taille de maximale de 100 tokens avec un recouvrement de 50. Pour 192 rapports, cela représente 8220 fragments de texte. Pour ces 8220 fragments nous avons calculer leur \textit{embedding} grace au modèle \textit{Instructor} et nous les avons intégré dans une base de données \textit{ChromaDB}, spécifique au stockage et requêtage de vecteur. Pour chaque fragment il est possible d'ajouter des méta-données qui peuvent servir de filtre pour les requêtes comme le diagnostic final ou le gène responsable de la maladie.
+
 \subsection{Requêtage des données}
 \begin{figure}[htbp]
   \centering
@@ -236,18 +241,21 @@ L'\textit{embeddings} permet de représenter un texte sous forme numérique en c
   \caption[Requêtage des données dans MyoSearch]{Schéma du requêtage des données dans MyoSearch}
   \label{fig:myoclassify_conf}
 \end{figure}
+Quand l'ensemble des documents ont été découpés et ingérés dans la base de données, il est possible de réaliser des requêtes. L'utilisateur peut entrer via l'interface web un symptôme d'intérêt en texte libre tel que "surcharge lipide". Cette requête va ensuite être transformé en vecteur numérique par le modèle d'\textit{embedding }\textit{Instructor}. Ce vecteur va être comparé à la base de données de vecteur pour rechercher le top 5 plus proche voisin grace à un algorithme nommé \textit{Hierarchical Navigable Small Worlds, HNSW}. Les cinq fragment avec le score de similarité les plus proches sont ensuite affiché sur l'interface web.  Le tableau \ref{tab:myosearch_results} présente les résultats obtenus pour une requête dans MyoSearch. Par exemple pour la requête "surcharge lipidique" les trois rapports les plus proches font mention d'une surcharge en lipides chez des patients dont (i) le diagnostic n'est pas connu, (ii) le diagnostic n'est pas une myopathie congénitale et (iii) chez un patient avec une \gls{nm}. Cette recherche est aussi multi-linguales, en effet le modèle d'\textit{embedding} étant multi-langues, la recherche entre une base de données française et une requête en anglais est possible, ou inversement.
 \begin{table}[ht]
 \centering
-\caption{Exemple de requêtes et de résultats de MyoSearch}
-\label{tab:myoclassify_metrics}
+\caption{Exemple d'une requête et des résultats de MyoSearch}
+\label{tab:myosearch_results}
 \begin{tabularx}{\textwidth}{|X|X|p{1cm}|p{2cm}|}
 \toprule
 \textbf{Requête} & \textbf{Fragment le plus similaire} & \textbf{Rang} & \textbf{Rapport et diagnostic} \\\hline
-Patient avec des batonnêtes sous la forme d'aggrégats sombres & "On oberseve des batonnets et des cores chez ce patient & 1 & 111.txt CNM\\
- & "On oberseve des batonnets et des cores chez ce patient & 2 & 111.txt CNM \\
- & "On oberseve des batonnets et des cores chez ce patient & 3 & 111.txt CNM \\ \hline
+"surcharge lipidique" & "d’inclusions. Il est à noter que l’on observe également une surcharge importante en lipides dans" \newline & 1 & 13405-105.txt UNCLEAR \\
+ & "une myopathie congénitale. D'autre part, une surcharge importante en lipides qui nécessite"\newline & 2 & 11391-79.txt non-CM \\
+ & "de surcharge en lipides - Technique de Koëlle : CONCLUSIONS : Anomalies caractéristiques d’une" & 3 & 5060-35.txt NM \\ \hline
 \end{tabularx}
 \end{table}
-\section{Déploiement de la plateforme}
-Developpé de façon \textit{open-source}, le code source de \gls{nlmyo} est disponible sur GitHub à l'adresse: \href{https://github.com/lambda-science/NLMyo}{https://github.com/lambda-science/NLMyo} et une version de démonstration en ligne est déployée grace à \textit{Streamlit} à l'adresse \href{https://lbgi.fr/NLMyo/}{https://lbgi.fr/NLMyo/}
+\section{Déploiement de l'outil}
+Developpé de façon \textit{open-source}, le code source de \gls{nlmyo} est disponible sur GitHub à l'adresse: \href{https://github.com/lambda-science/NLMyo}{https://github.com/lambda-science/NLMyo} soit une licence AGPL-3 assurant le status open-source de l'outil. Une version de démonstration en ligne est déployée grace à \textit{Streamlit} à l'adresse \href{https://lbgi.fr/NLMyo/}{https://lbgi.fr/NLMyo/}. Comme \gls{nlmyo} proposer l'utilisation de \gls{llms} auto-hebergé, l'outil est herbergé sur un serveur avec un 64 coeurs pour accélérer l'inférence du notre \gls{llms}. Si l'outil n'utilise que l'API OpenAI comme modèle génératif et d'\textit{embedding} alors il est possible d'héberger l'application sur un serveur avec très peu de ressource de calcul.
 \section{Perspectives futures de développement}
+* problemes de embedding fragmentation et technique de retrieval + métadonées
+* modèle privés ? + 
