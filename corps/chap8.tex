@@ -1,0 +1,32 @@
+\chapter{Vers une génération de rapports automatique à partir d’imagerie avec MyoQuant}
+\section{Contexte}
+Les outils présentés précédemment ont pour vocation de traiter et d'explorer les comptes-rendus de biopsie textuels. Permettant ainsi une approche rétrospective de l'ensemble des patients connu à ce jour. Cependant il est intéressant d'explorer aussi comment l'analyse d'images par \gls{ia} peut permettre de générer automatiquement ces comptes-rendus de biopsie. Cette approche permettrait un précision et de temps dans l'évaluation des biopsies. Tout d'abord un gain de temps car une approche par \gls{ia} permettrait de traiter  plusieurs biopsie de grand taille de manière automatique, libérant ainsi le temps utilisé pour l'évaluation des coupes histologiques.  Ensuite un gain de précision car, l'évalutation des biopsie par un expert humain est en général qualitative. La description de phénotype se limite généralement à des adjectifs de quantité tel que "peu", "moyen" ou "beaucoup". Grâce à une approche de comptage par \gls{ia}, il est alors possible d'obtenir la quantité précise de fibres présentant un noyau centralisé par exemple et ainsi de pouvoir établir des seuils pour une analyse plus approfondie.
+
+MyoQuant, l'outil présenté dans ce chapitre, est une suite de méthodes pour quantifier différents marqueurs pathologiques dans les biopsies de myopathies congénitales. MyoQuant intègre soit des méthodes algorithmiques simples basée sur des modèles d'\gls{ia} généralistes en histologie comme CellPose (\cite{stringer_cellpose_2021}) et Stardist (\cite{weigert_star-convex_2020}), soit des méthodes basées sur des modèles \gls{ia} développés à partir de nos données. Actuellement, MyoQuant est capable de quantifier des marqueurs pathologiques dans trois des cinq colorations réalisées en routine lors du diagnostic des myopathies congénitales: la centralisation des noyaux à la coloration \gls{he}, un déséquilibre dans le ratio des fibres de type 1 et 2 à la coloration ATPase et une répartition anormales des mitochondries dans les fibres musculaires à la coloration \gls{sdh}. Dans ce chapitre nous allons voir comment ont été implémentées ces solutions de quantifications automatique et des exemples d'application.
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.66\textwidth]{figures/myoquant_logo.png}
+ \caption[Logo MyoQuant]{Logo de MyoQuant}
+ \label{fig:myoquant_logo}
+\end{figure}
+
+\section{Analyses de la position de noyaux cellulaires}
+\subsection{Algorithme}
+\subsection{Exemple d'application}
+tableau des temps de calculs pour une slide complètes
+\section{Ratio de fibre de type 1 et 2: classification basée sur l'intensité de coloration}
+\subsection{Algorithme}
+\subsection{Exemple d'application}
+\section{Répartition des mitochondrie: classification basée sur intelligence artificielle}
+\subsection{IA}
+\subsection{Exemple d'application}
+\subsection{Exploration du modele}
+Performance supérieure à l'Homme
+Embedding des images / PCA / features extraites par modèles par trucs
+
+\section{Déploiement de la plateforme}
+\subsection{Outil en ligne de commande}
+\subsection{Démo en ligne}
+\section{Limitations}
+\section{Perspectives futures de développement}
