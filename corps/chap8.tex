@@ -1,6 +1,6 @@
 \chapter{Vers une génération de rapports automatique à partir d’imagerie avec MyoQuant}
 \section{Contexte}
-Les outils présentés précédemment ont pour vocation de traiter et d'explorer les comptes-rendus de biopsie textuels. Permettant ainsi une approche rétrospective de l'ensemble des patients connu à ce jour. Cependant il est intéressant d'explorer aussi comment l'analyse d'images par \gls{ia} peut permettre de générer automatiquement ces comptes-rendus de biopsie. Cette approche permettrait un précision et de temps dans l'évaluation des biopsies. Tout d'abord un gain de temps car une approche par \gls{ia} permettrait de traiter  plusieurs biopsie de grand taille de manière automatique, libérant ainsi le temps utilisé pour l'évaluation des coupes histologiques.  Ensuite un gain de précision car, l'évalutation des biopsie par un expert humain est en général qualitative. La description de phénotype se limite généralement à des adjectifs de quantité tel que "peu", "moyen" ou "beaucoup". Grâce à une approche de comptage par \gls{ia}, il est alors possible d'obtenir la quantité précise de fibres présentant un noyau centralisé par exemple et ainsi de pouvoir établir des seuils pour une analyse plus approfondie.
+Les outils présentés précédemment ont pour vocation de traiter et d'explorer les comptes-rendus de biopsie textuels. Permettant ainsi une approche rétrospective de l'ensemble des patients connu à ce jour. Cependant il est intéressant d'explorer aussi comment l'analyse d'images par \gls{ia} peut permettre de générer automatiquement ces comptes-rendus de biopsie. Cette approche permettrait un précision et de temps dans l'évaluation des biopsies. Tout d'abord un gain de temps car une approche par \gls{ia} permettrait de traiter  plusieurs biopsie de grand taille de manière automatique, libérant ainsi le temps utilisé pour l'évaluation des coupes histologiques.  Ensuite un gain de précision car, l'évaluation des biopsie par un expert humain est en général qualitative. La description de phénotype se limite généralement à des adjectifs de quantité tel que "peu", "moyen" ou "beaucoup". Grâce à une approche de comptage par \gls{ia}, il est alors possible d'obtenir la quantité précise de fibres présentant un noyau centralisé par exemple et ainsi de pouvoir établir des seuils pour une analyse plus approfondie.
 
 MyoQuant, l'outil présenté dans ce chapitre, est une suite de méthodes pour quantifier différents marqueurs pathologiques dans les biopsies de myopathies congénitales. MyoQuant intègre soit des méthodes algorithmiques simples basée sur des modèles d'\gls{ia} généralistes en histologie comme CellPose (\cite{stringer_cellpose_2021}) et Stardist (\cite{weigert_star-convex_2020}), soit des méthodes basées sur des modèles \gls{ia} développés à partir de nos données. Actuellement, MyoQuant est capable de quantifier des marqueurs pathologiques dans trois des cinq colorations réalisées en routine lors du diagnostic des myopathies congénitales: la centralisation des noyaux à la coloration \gls{he}, un déséquilibre dans le ratio des fibres de type 1 et 2 à la coloration ATPase et une répartition anormales des mitochondries dans les fibres musculaires à la coloration \gls{sdh}. Dans ce chapitre nous allons voir comment ont été implémentées ces solutions de quantifications automatique et des exemples d'application.
 
@@ -11,22 +11,112 @@ MyoQuant, l'outil présenté dans ce chapitre, est une suite de méthodes pour q
  \label{fig:myoquant_logo}
 \end{figure}
 
-\section{Analyses de la position de noyaux cellulaires}
-\subsection{Algorithme}
-\subsection{Exemple d'application}
-tableau des temps de calculs pour une slide complètes
+\section{Analyse de la position des noyaux cellulaires}
+Dans un premier temps, nous nous sommes intéressé à l'analyse de la position des noyaux cellulaires dans les fibres musculaire. Dans un muscle sain, les noyaux sont en général en périphérie des fibres, chez les patients atteint de \gls{mc} et particulièrement dans les \gls{cnm}, les noyaux peuvent être internalisés voir centralisés. Par exemple, dans la figure \ref{fig:he_example}, on observe un nombre important de fibre ayant un noyau cellulaire internalisé. Nous avons alors développé une méthode pour compter automatiquement le nombre de fibre présentant un noyau internalisé.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/he_example.jpg}
+ \caption[Exemple de biopsie musculaire à la coloration HE]{Exemple de biopsie musculaire de CNM à la coloration HE dans laquelle on observe des fibres avec des noyaux centralisés.}
+ \label{fig:he_example}
+\end{figure}
+
+\subsection{Algorithme de quantification}
+Pour réaliser cette quantification, la première étape consiste à segmenter, c'est à dire obtenir la position de toutes les fibres musculaires et les noyaux de la coupe. Pour cela nous avons utilisés deux modèles d'intelligence artificielle généralistes développés spécifique pour l'analyse de coupe histologique: Cellpose et Stardist. Cellpose nous a permis de segmenter les fibres musculaire, tandis que Stardist nous a permis de segmenter les noyaux cellulaires. La figure \ref{fig:he_seg} présente les résultat de la segmentation de la biopsie présentée en figure \ref{fig:he_example}. On observe que globalement toutes les fibres musculaires sont bien segmentées, cependant concernant les noyaux cellulaires, certains sont trop peu colorés pour être reconnu par le modèle. C'est notamment le cas pour quelques noyaux centraux sur la gauche de la biopsie. Ce qui sera problématique lors de l'analyse des noyaux, car ils ne seront pas considérés.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/he_seg.png}
+ \caption[Exemple de segmentation de biopsie par Cellpose et Stardist]{Exemple de segmentation des fibres musculaires et des noyaux cellulaires par Cellpose et Stardist}
+ \label{fig:he_seg}
+\end{figure}
+
+Une fois avoir obtenu la position de chaque fibre et noyaux, nous évaluons la position de chaque noyaux, fibre par fibre. Cette evaluation repose sur le calcul de ce que l'ont appelle un score d'excentricité. Ce score est calculé selon la formule suivante:
+
+\(\text{Score d'excentricité} = \frac{\text{Dist. centre fibre et noyau}}{\text{Dist. centre fibre et membrane}}\)
+
+Où la notation "Dist. centre fibre et noyau" représente la distance en pixels entre le centroïde de la fibre musculaire au centroïde du noyau considéré. Et la notation "Dist. centre fibre et membrane" représente la distance entre le centroïde de la fibre musculaire à la membrane cellulaire selon une droite passant par le noyau d'intérêt. La figure \ref{fig:he_single_nuc}  présente la classification des noyaux d'une fibre musculaire unique. Quatres noyaux ont été détecté dans cette fibre dont trois ont un score d'excentricité supérieur à 0,9 et un inférieur à 0,1. En fixant un seuil de façon empirique à 0,75, on considère alors que cette fibre musculaire possède un noyau internalisé.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=1\textwidth]{figures/he_single_nuc.png}
+ \caption[Exemple de classification de la position des noyaux]{Exemple de classification de la position des noyaux cellulaire d'une fibre musculaire. \textbf{(A)} La fibre musculaire seule,\textbf{ (B)} le masque de segmentation des noyaux, 4 pour cette fibre,\textbf{ (C)} schéma de la classification des noyaux avec le score d'excentricité de chaque noyau représentant le ratio de distance: centre de la fibre - noyau vs centre de la fibre - membrane cellulaire.}
+ \label{fig:he_single_nuc}
+\end{figure}
+En comparant l'ensemble des noyaux de chaque fibre à un seuil (ici fixé à 0,75) on peut alors quantifier le nombre de fibre musculaire ayant au moins un ou plusieurs noyaux internalisés. Par exemple pour l'image présenté en figure \ref{fig:he_example}, la figure \ref{fig:he_paint} présente les résultats de classification. Sur cette coupe histologique, on obtient un total de 74 fibres (soit 42\% des fibres) avec au moins un noyau internalisé.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/he_paint.png}
+ \caption[Exemple de classification de biopsie musculaire HE]{Exemple de classification de biopsie musculaire à la coloration HE. Colorée en vert les fibres sans noyau internalisé, en rouge les fibres avec au moins un noyau internalisé (score d'excentricité inférieur à 0.75)}
+ \label{fig:he_paint}
+\end{figure}
+
+\subsection{Exemple d'application: quantification de la régénération musculaire }
+La présence de noyaux centralisé dans les fibres musculaire est un marqueur pathologique des les biopsie de myopathies congénitales. Cependant cette centralisation peut aussi être synonyme de régénération musculaire chez les individus sains. Ainsi, la quantification du nombre de noyaux centralisés est donc aussi un moyen de quantifier la régénération musculaire dans une coupe histologique. Ainsi dans le cadre d'une collaboration avec l'\gls{igbmc} et spécifiquement avec l'équipe Biologie moléculaire et cellulaire des cancers du sein du Dr. Tomasetto, nous avons utilisé MyoQuant pour évaluer la quantité de régénération musculaire chez des souris traitée avec un drogue induisant le processus régénération. Ces images d'histologie sont des images à fluorescence (et non à la coloration \gls{he}) avec un fluorochrome pour la membrane cellulaire et un fluorochrome pour les noyaux cellulaire. L'algorithme de MyoQuant est directement compatible avec les images à fluorecence et fonction de la même façon que pour les images à coloration\gls{he}
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/fluo_nuc.png}
+ \caption[Exemple de classification de biopsie musculaire pour la régénération musculaire]{Exemple de classification de biopsie musculaire pour la régénération musculaire. Colorée en vert les fibres sans noyau internalisé (fibre normales), en rouge les fibres avec au moins un noyau internalisé (en régénération)}
+ \label{fig:fluo_paint}
+\end{figure}
+
+La figure \ref{fig:fluo_paint} présente un exemple de coupe complète de biopsie musculaire de souris avec le masque de quantification associé généré par MyoQuant. Sur cette image, il y a 6078 fibres musculaires détectées, dont 2285 (environ 35\%) sont en régénération. Le tableau \ref{tab:myoquant_fluo_time} présente le temps de calcul necessaire pour chaque étape de la quantification. Le tableau \ref{fig:fluo_compil} présente l'ensemble des quantification opérée dans les différentes conditions de traitement et de génotype (au total 35 \gls{wsi} analysées). On observe qu'après traitement avec la \textit{Cardiotoxin}, une drogue induisant la régénération musculaire, une proportion significativement supérieur de fibre ayant un noyaux internalisé par rapport aux coupes contrôle. Ces résultats confirment que MyoQuant est bien capable d'évaluer de façon robuste la présence de noyaux internalisés, un marqueur de la régénération musculaire.
+\begin{table}[ht]
+\centering
+\caption{Temps de calcul pour l'analyse des noyaux d'une coupe complète (16 000 x 8 000 pixels)}
+\label{tab:myoquant_fluo_time}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Etape} & \textbf{Temps sur GPU} & \textbf{Temps sur CPU (s)} & \textbf{Fibre par seconde (sur CPU)} \\
+\toprule
+Cellpose & 652 & 10000 & ? \\
+\hline
+StarDist & \textit{out-of-memory} & 10000 & ? \\
+\hline
+Classification des noyaux & 15 & 15 & 0.6 \\
+\hline
+\textbf{Total} & \textbf{450} & 10000 & \textbf{1.8} \\
+\hline
+\end{tabularx}
+\end{table}
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/fluo_compil.png}
+ \caption[Résultat de la quantification de la régénération musculaire]{Résultat de la quantification de la régénération musculaire chez des souris pour 4 génotype différents traité (bleu) ou non (orange) avec une drogue induisant la régénération musculaire.}
+ \label{fig:fluo_compil}
+\end{figure}
+
 \section{Ratio de fibre de type 1 et 2: classification basée sur l'intensité de coloration}
-\subsection{Algorithme}
+* Exemple image brute / présentation du problême
+\subsection{Algorithme de quantification}
+* Extraction de l'intensité de chaque fibre
+* Histograme et courbe de densité lissée
+* Fit des peaks par gaussian mixture
+* Tresholding avec le minimum local entre les pics
+* Exemple sur petite image
+
 \subsection{Exemple d'application}
+* Exemple classification 3 classes d'image ATPase -> calcul + quantif
+
 \section{Répartition des mitochondrie: classification basée sur intelligence artificielle}
-\subsection{IA}
+* présentation du problême
+\subsection{Jeu de donnée de souris et annotations}
+\subsection{Entrainnement et architecture de l'IA}
+\subsection{ Performance et explicabilité de l'IA}
 \subsection{Exemple d'application}
 \subsection{Exploration du modele}
-Performance supérieure à l'Homme
-Embedding des images / PCA / features extraites par modèles par trucs
+* Embedding des images / PCA / features extraites par modèles par trucs
+* Performance supérieure à l'Homme ; Correction des annotations / identitifaction
+
 
 \section{Déploiement de la plateforme}
 \subsection{Outil en ligne de commande}
+* Traitement de grande quantitté d'images et slides complètes mais besoin de GPU la majorité du temps
 \subsection{Démo en ligne}
+* Pour faire la promotion de l'outil et faire des test sur des morceaux d'images + paramètre visuel + explicabilité
 \section{Limitations}
+* Entrainé sur la souris, pas toutes les colorations, pas tout les marqueurs pour chaque coloration
+
 \section{Perspectives futures de développement}
+* Ajouts de nouvelles colorations et nouveaux marqueurs
+* Déploiement d'interface avec accès GPU
+* Test grand échelle chez l'Homme pour dataset comparaison expert / humain
+* Analyse de vrai patients pour voir si on peut faire des seuil en fonction des diag
+* he analyse plus de valeurs à analyse taille + co disponibles
