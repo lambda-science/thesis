@@ -57,25 +57,50 @@ La présence de noyaux centralisé dans les fibres musculaire est un marqueur pa
  \label{fig:fluo_paint}
 \end{figure}
 
-La figure \ref{fig:fluo_paint} présente un exemple de coupe complète de biopsie musculaire de souris avec le masque de quantification associé généré par MyoQuant. Sur cette image, il y a 6078 fibres musculaires détectées, dont 2285 (environ 35\%) sont en régénération. Le tableau \ref{tab:myoquant_fluo_time} présente le temps de calcul necessaire pour chaque étape de la quantification. Le tableau \ref{fig:fluo_compil} présente l'ensemble des quantification opérée dans les différentes conditions de traitement et de génotype (au total 35 \gls{wsi} analysées). On observe qu'après traitement avec la \textit{Cardiotoxin}, une drogue induisant la régénération musculaire, une proportion significativement supérieur de fibre ayant un noyaux internalisé par rapport aux coupes contrôle. Ces résultats confirment que MyoQuant est bien capable d'évaluer de façon robuste la présence de noyaux internalisés, un marqueur de la régénération musculaire.
+La figure \ref{fig:fluo_paint} présente un exemple de coupe complète de biopsie musculaire de souris avec le masque de quantification associé généré par MyoQuant. Sur cette image, il y a 6078 fibres musculaires détectées, dont 2285 (environ 35\%) sont en régénération. Le tableau \ref{tab:myoquant_fluo_time} présente le temps de calcul nécessaire pour chaque étape de la quantification pour la coupe \ref{fig:fluo_paint} et le tableau \ref{tab:myoquant_fluo_results} présente les résultats de cet quantification. On observe ici que pour traiter  une coupe complète sur une machine sans matériel spécifique (sans GPU) il a nécessité environ 1 heure de calcul, dont la majorité a été utilisée par Cellpose pour segmenter les fibres musculaire. Cependant cette vitesse peut-être largement améliorée d'un facteur 5 par l'utilisation de matériel spécifique aux calculs \gls{ia} (GPU), passant de 3782 secondes pour Cellpose à 652. Pour une image contenant 6078 fibres et 23 628 noyaux, cela représente environ 1.6 fibre traitée par seconde. Cette quantification a mis en évidence que 37\% des fibres présentaient un noyau internalisé et donc sont en régénération.
 \begin{table}[ht]
 \centering
-\caption{Temps de calcul pour l'analyse des noyaux d'une coupe complète (16 000 x 8 000 pixels)}
+\caption{Temps de calcul pour l'analyse des noyaux d'une coupe complète (6078 fibres, 12000 x 9600 pixels)}
 \label{tab:myoquant_fluo_time}
-\begin{tabularx}{\textwidth}{|X|X|X|}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
 \hline
 \textbf{Etape} & \textbf{Temps sur GPU} & \textbf{Temps sur CPU (s)} & \textbf{Fibre par seconde (sur CPU)} \\
 \toprule
-Cellpose & 652 & 10000 & ? \\
+Cellpose & 652 & 3 782 & 1.6 \\
 \hline
-StarDist & \textit{out-of-memory} & 10000 & ? \\
+StarDist & \textit{out-of-memory} & 21 & 29 \\
 \hline
-Classification des noyaux & 15 & 15 & 0.6 \\
+Classification des noyaux & 68 & 68 & 89 \\
 \hline
-\textbf{Total} & \textbf{450} & 10000 & \textbf{1.8} \\
+\textbf{Total} & \textbf{>720} & \textbf{3 871} & \textbf{1.57} \\
 \hline
 \end{tabularx}
 \end{table}
+\begin{table}[ht]
+\centering
+\caption{Résultats de quantification des noyaux d'une coupe complète (6078 fibres, 12000 x 9600 pixels)}
+\label{tab:myoquant_fluo_results}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Type} & \textbf{Valeur} & \textbf{Proportion (\%)} \\
+\toprule
+N° Fibre & 6 078 & 100 \\
+\hline
+N° Fibre avec 1+ noyau internalisé & 2 264 & 37 \\
+\hline
+\hline
+N° Noyaux & 23 628 & 100 \\
+\hline
+N° Noyaux internalisés & 3 933 & 16 \\
+\hline
+N° Noyaux périphériques & 17 918 & 76 \\
+\hline
+N° Noyaux non-classés (hors fibres) & 1 777 & 8 \\
+\hline
+\end{tabularx}
+\end{table}
+Le tableau \ref{fig:fluo_compil} présente l'ensemble des quantification opérée dans les différentes conditions de traitement et de génotype (au total 35 \gls{wsi} analysées). On observe qu'après traitement avec la \textit{Cardiotoxin}, une drogue induisant la régénération musculaire, une proportion significativement supérieur de fibre ayant un noyaux internalisé par rapport aux coupes contrôle. Ces résultats confirment que MyoQuant est bien capable d'évaluer de façon robuste la présence de noyaux internalisés, un marqueur de la régénération musculaire.
+
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/fluo_compil.png}
@@ -84,6 +109,7 @@ Classification des noyaux & 15 & 15 & 0.6 \\
 \end{figure}
 
 \section{Ratio de fibre de type 1 et 2: classification basée sur l'intensité de coloration}
+
 * Exemple image brute / présentation du problême
 \subsection{Algorithme de quantification}
 * Extraction de l'intensité de chaque fibre
