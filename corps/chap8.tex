@@ -110,16 +110,74 @@ Le tableau \ref{fig:fluo_compil} présente l'ensemble des quantification opéré
 
 \section{Ratio de fibre de type 1 et 2: classification basée sur l'intensité de coloration}
 
-* Exemple image brute / présentation du problême
+Dans un second temps, nous nous sommes intéressé à l'analyse du ratio des différents type de fibre musculaire dans les biopsies. Dans certaines myopathies congénitales, l'équilibre entre fibre de type 1 et type 2 peut-être modifié avec une prédominance des fibres de type 1. Les différents type de fibre musculaire sont colorée différentiellement (différence d'intensité) à la coloration ATPase. A un pH 4.3, les fibres de type 1 sont sombres et les fibres de type 2 sont pales, et inversement au pH 9.4. La figure \ref{fig:atp_example} représente une biopsie musculaire colorée à l'ATPase pH 9.4. On observe la présence de deux populations de fibres à coloration distinctes. Nous avons alors développé une méthode pour compter automatiquement le nombre de fibre de chaque type.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/atp_example.png}
+ \caption[Exemple de biopsie musculaire à la coloration ATPase pH 9.4]{Exemple de biopsie musculaire à la coloration ATPase pH 9.4 qui permet de différencier les fibres de type 1 aux fibres de type 2.}
+ \label{fig:atp_example}
+\end{figure}
 \subsection{Algorithme de quantification}
-* Extraction de l'intensité de chaque fibre
-* Histograme et courbe de densité lissée
-* Fit des peaks par gaussian mixture
-* Tresholding avec le minimum local entre les pics
-* Exemple sur petite image
+Pour réaliser cette quantification, la première étape consiste à segmenter, c'est à dire obtenir la position de toutes les fibres musculaires. Comme précédemment, nous avons utilisés Cellpose afin segmenter les fibres musculaire. Ensuite pour chaque fibre nous avons extrait l'intensité moyenne de la fibre et avons réalisé un histogramme. La figure \ref{fig:atp_density} présente l'histogramme issue de l'analyse de l'image d'exemple pour la coloration ATPase pH 9.4 (\ref{fig:atp_example}). Le but de la procédure est de déterminer automatiquement les pics présent dans l'histogramme et de trouver les minimums locaux entre les pics pour fixer un ou plusieurs seuil d'intensité. Pour cela, à partir des valeurs de cet histogramme, une courbe de densité est créée (par méthode de \gls{kde}). Puis à partir de cette courbe de densité, une méthode de mélange Gaussien est utilisée pour déterminer la position des pics dans la courbe de densité. Finalement, le seuil est déterminé en trouvant le minimum local de la courbe de densité entre les deux pics.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/density_plot.png}
+ \caption[Exemple d'histogramme et courbe de densité biopsie ATPase]{Exemple d'histogramme et courbe de densité biopsie ATPase}
+ \label{fig:atp_density}
+\end{figure}
 
-\subsection{Exemple d'application}
-* Exemple classification 3 classes d'image ATPase -> calcul + quantif
+A partir de ce seuil, il est alors possible de classer les fibres musculaire en deux catégories: celle avec une intensité moyenne inférieure au seuil et celle avec une intensité moyenne supérieure. La figure \ref{fig:apt_paint} présente les résultat de la quantification automatique des fibres de l'image présenté en exemple précédemment. Sur cette images, on a pu quantifier au total la présence de 496 fibres, dont 269 (54\%) fibres de type 1 et 227 (46\%) fibres de type 2. 
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/atp_paint.png}
+ \caption[Exemple de classification de biopsie musculaire à la coloration ATPase]{Exemple de classification de biopsie musculaire à la coloration ATPase. Colorée en rouge les fibres ayant une intensité inférieur au seuil (type 2) en vert supérieur au seuil (type 1)}
+ \label{fig:apt_paint}
+\end{figure}
+
+\subsection{Exemple d'application: classification d'une coupe complète avec trois types de fibre}
+La coloration ATPase peut révéler plus de deux types de fibre musculaire. En effet les fibre type 2 ont plusieurs sous-type visualisation dans certaines conditions de colorations. Dans cet exemple, nous avons utilisé la méthode de classification développé pour détecter trois types de fibres. L'algorithme présenté dans cette section est capable d'établir autant de seuil automatiquement que spécifié par l'utilisateur (et non pas seulement deux). La figure \ref{fig:atp_paint_wsi} présente les résultats de classification d'une \gls{wsi} de biopsie musculaire colorée à l'ATP pH 9.4. Sur cette coupe on observe trois populations de fibres: des fibres pâles (fibre de type 1), des fibres sombres (fibre de type 2A) et de petites fibres très sombres localisée en haut de la coupe (fibre type 2B). La méthode de quantification a alors pu définir deux seuils pour séparer ces trois classes. 
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=1\textwidth]{figures/atp_wsi.png}
+ \caption[Exemple de classification de biopsie musculaire pour la régénération musculaire]{Exemple de classification de biopsie musculaire pour la régénération musculaire. Colorée en vert les fibres sans noyau internalisé (fibre normales), en rouge les fibres avec au moins un noyau internalisé (en régénération)}
+ \label{fig:atp_paint_wsi}
+\end{figure}
+
+Les résultats de cette classification sont référencé dans le tableau \ref{tab:atp_wsi_resultstable} , le temps de calcul et la vitesse de classification sont disponibles dans le tableau \ref{tab:atp_wsi_timetable}. Au total, 1840 fibres ont été classifiée en 131 secondes (soit 14 fibres par secondes). Il y a une majortié de fibre de type 1 (894, 49\%), de fibre de type de 2A (829, 45\%) et une faible proportion de petite fibre de type 2B (117, 6\%). Les résultats de cette quantification sont visuellement satisfaisant, bien qu'une partie de la biopsie en bas a droite, est repliée sur elle même et donc apparaît avec une intensité de coloration forte. Cette zone a donc été considérée à tort comme des fibres de type 2B. Ces résultats mettent en évidence le besoin biopsie avec une préparation de qualité pour obtenir des résultats robustes lors de la quantification automatique.
+
+\begin{table}[ht]
+\centering
+\caption{Temps de calcul pour l'analyse des types de fibre d'une coupe complète (1840 fibres, 6000 x 5600 pixels)}
+\label{tab:atp_wsi_timetable}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Étape} & \textbf{Temps sur GPU} & \textbf{Fibre par seconde (sur GPU)} \\
+\toprule
+Cellpose & 113 & 16 \\
+\hline
+Classification des fibres & 18 & 102 \\
+\hline
+\textbf{Total} & \textbf{131} & \textbf{14} \\
+\hline
+\end{tabularx}
+\end{table}
+\begin{table}[ht]
+\centering
+\caption{Résultats de quantification des types de fibre d'une coupe complète (1840 fibres, 6000 x 5600 pixels)}
+\label{tab:atp_wsi_resultstable}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Type} & \textbf{Valeur} & \textbf{Proportion (\%)} \\
+\toprule
+Fibre type 1 & 894 & 49 \\
+\hline
+Fibre type 2A & 2 829 & 45 \\
+\hline
+Fibre type 2B & 117 & 6 \\
+\hline
+\end{tabularx}
+\end{table}
+
 
 \section{Répartition des mitochondrie: classification basée sur intelligence artificielle}
 * présentation du problême
