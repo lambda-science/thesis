@@ -50,7 +50,7 @@ La figure \ref{fig:regex} présente les résultats de la technique d'anonymisati
 \centering
 \caption{Exemples de faux positifs ou faux négatifs de la méthode RegEx}
 \label{tab:regex_fail}
-\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
 \hline
 \textbf{Texte} & \textbf{RegEx déclenchée} & \textbf{Type} & \textbf{Commentaire} \\ \hline
 \textit{PAS Staining} & Nom patient 3 & Faux Positif & Nom de coloration dont la notation est confondue avec le motif "NOM Prénom" \\ \hline
@@ -134,7 +134,7 @@ Il est important de noter qu'en terme de ressources de calcul et de temps de d'i
 \centering
 \caption{Résultats de \textit{MyoExtract} pour \textit{GPT-3.5-turbo} and \textit{Vicuna7B}}
 \label{tab:json_data}
-\begin{tabularx}{\textwidth}{|X|X|X|}
+\begin{tabularx}{\textwidth}{|l|X|X|}
 \hline
 \textbf{Information} & \textbf{GPT-3.5-turbo} & \textbf{Vicuna7B} \\ \hline
 Nom & DOE John & DOE John \\ \hline
@@ -170,7 +170,7 @@ A partir de ces 4 jeux de données (192 rapports dans 4 conditions: français/an
 \centering
 \caption{Nombre de rapports par diagnostic}
 \label{tab:number_patients}
-\begin{tabularx}{\textwidth}{|X|X|}
+\begin{tabular}{|l|c|}
 \hline
 \textbf{Diagnostic} & \textbf{Nombre de rapports} \\
 \hline
@@ -184,7 +184,7 @@ Diagnostic non établis (UNCLEAR) & 54 \\
 \hline
 Autre (non-CM) & 30 \\
 \hline
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 \subsection{Résultats des entraînements et performances des systèmes d'\textit{embedding}}
@@ -193,9 +193,9 @@ Au total 8 conditions expérimentales pour la prédiction de diagnostics ont ét
 \centering
 \caption{Récapitulatif des performances des modèles \textit{MyoClassify}}
 \label{tab:myoclassify_metrics}
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
-\toprule
-\textbf{Nom} & \textbf{Exactitude} & \textbf{Exact. Pond.} & \textbf{F1 pond.} & \textbf{F1-Macro} & \textbf{F1 classe CNM} \\\hline
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|}
+\hline
+\textbf{Nom} & \textbf{Exactitude} & \textbf{Exact. Pond.} & \textbf{F1 pond.} & \textbf{F1-Macro} & \textbf{F1 CNM} \\\hline
 Instructor FR RF & 0.6522 & 0.5556 & 0.6231 & 0.5408 & 0.1053 \\ \hline
 Instructor EN RF & 0.6667 & 0.5436 & 0.6215 & 0.5172 & 0 \\ \hline
 Instructor FR MLPC & 0.6739 & 0.5703 & 0.6597 & 0.5608 & 0.07692 \\ \hline
@@ -252,8 +252,8 @@ Quand l'ensemble des documents ont été découpés et ingérés dans la base de
 \centering
 \caption{Exemple d'une requête et des résultats de \textit{MyoSearch}}
 \label{tab:myosearch_results}
-\begin{tabularx}{\textwidth}{|X|X|p{1cm}|p{2cm}|}
-\toprule
+\begin{tabularx}{\textwidth}{|l|X|p{1cm}|p{2cm}|}
+\hline
 \textbf{Requête} & \textbf{Fragment le plus similaire} & \textbf{Rang} & \textbf{Rapport et diagnostic} \\\hline
 "surcharge lipidique" & "d’inclusions. Il est à noter que l’on observe également une surcharge importante en lipides dans" \newline & 1 & 13405-105.txt UNCLEAR \\
  & "une myopathie congénitale. D'autre part, une surcharge importante en lipides qui nécessite"\newline & 2 & 11391-79.txt non-CM \\
