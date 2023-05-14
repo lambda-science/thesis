@@ -24,7 +24,7 @@ Afin de traiter un grand volume de rapports et d'éliminer le travail manuel né
 \subsection{Anonymisation par RegEx}
 En première intention, nous avons développé une méthode basée sur les \gls{regex} pour leur simplicité à mettre en place et leur rapidité d'exécution (coûts en puissance de calcul faible). Le tableau \ref{tab:regex} liste les \gls{regex} utilisées pour capturer les informations de noms et de dates. Les comptes-rendus de biopsie sont semi-structurés. Pour la plupart le nom du patient est facilement identifiable car il est précédé par le préfixe: "Nom: ". Ceci est facilement capturable par la première \gls{regex} listée dans le tableau. Ensuite pour les autres cas de figure, comme les noms de famille sont souvent en majuscule et les prénom commencent souvent pas une majuscule, nous avons développé deux autres \gls{regex} pour capturer les couples de mots dont un est en majuscule et le second commence par une majuscule (ou inversement, ligne 2 et 3 du tableau). 
 Ensuite, une troisième \gls{regex} a été ajoutée pour détecter les dates au format JJ-MM-AAAA ou JJ.MM.AAAA (ligne 3 du tableau). Finalement une dernière \gls{regex} est utilisée pour essayer de trouver le numéro de biopsie dans le document afin de renommer le fichier avec un nom unique et anonyme (ligne 4 du tableau). 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \caption{Expressions régulières pour extraire les noms et les dates}
 \label{tab:regex}
@@ -46,7 +46,7 @@ N° Biopsie & ([0-9]\{3,8\}[-/]?[0-9]\{0,3\}) & 9876-54, 1234/56 \\ \hline
 \end{figure}
 
 La figure \ref{fig:regex} présente les résultats de la technique d'anonymisation par \gls{regex} sur l'entête d'un rapport factice de patient mais avec une structure similaire aux rapport de l'institut de myologie de Paris. Les noms et les dates ont été censurés correctement et la méthode a produit de bon résultats. Cependant cette méthode est insuffisante car elle est peu sensible et spécifique. Le tableau \ref{tab:regex_fail} liste trois exemples de cas où cette méthode ne fonctionne pas et produit des erreurs. Il est possible de corriger ces erreurs en augmentant la somme de \gls{regex} utilisée, mais augmenter le nom de \gls{regex} augmente aussi potentiellement le nombre de faux positifs. De plus il n'est pas toujours possible de construire une \gls{regex} adaptée pour extraire une information précise. Nous avons alors exploré la capacité des \gls{llms} pour la recherche et l'extraction de ces informations de manière plus robuste et flexible que la méthode \gls{regex}.
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \caption{Exemples de faux positifs ou faux négatifs de la méthode RegEx}
 \label{tab:regex_fail}
@@ -130,7 +130,7 @@ Pour cet exemple d'utilisation nous avons généré un rapport factice de patien
 Les résultats de l'extraction d'information présentés dans le tableau \ref{tab:json_data} montrent que le modèle d'\textit{OpenAI} GPT-3.5-turbo est capable d'extraire l'ensemble des informations demandées de manière satisfaisante tout en étant capable de détecter l'absence de certaines informations. Concernant le modèle \textit{Vicuna-7B}, qui a l'avantage d'être auto-hébergé et donc d'être utilisable pour des données sensibles, les performances sont moindres. En effet, six données sur treize (diagnostic et anomalies) demandées sont tout simplement manquante dans le JSON de sortie. Cependant pour les sept données (nom, âge, dates, muscle et numéro de biopsie) présentes, les résultats sont satisfaisant, le modèle a extrait les bonne informations.
 
 Il est important de noter qu'en terme de ressources de calcul et de temps de d'inférence, \textit{GPT-3.5} possède un avantage non-négligeable car ce modèle n'est accessible que par une \gls{api}. Les coûts de calcul pour l'application sont donc nul et la requête ne prend que quelques secondes à être réalisée. Pour \textit{Vicuna}, le modèle auto-hébergé, chaque requête requiert une quantité importante de ressources de calcul et monopolise ces ressources pour un temps important (environ 1min30 par document). Ces coûts en ressources et en temps de calcul couplé à une précision plus faible, rendent difficile l'exploitation de modèle \gls{llms} génératif auto-hébergé pour la tâche d'extraction d'informations à travers une interface en ligne.
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \caption{Résultats de \textit{MyoExtract} pour \textit{GPT-3.5-turbo} and \textit{Vicuna7B}}
 \label{tab:json_data}
@@ -166,7 +166,7 @@ La figure \ref{fig:myoclassify_flow} représente l'ensemble des étapes réalis�
 
 La contenu de chaque rapports (texte brut sans la partie conclusion) a été traduit en anglais grâce à l'\gls{api} DeepL afin de comparer les performances sur les textes anglais (traduit) et français (orignaux). Puis ces textes ont été encodés numériquement grâce à deux modèles\gls{llms} d'\textit{embedding}: le modèle d'OpenAI (disponible uniquement via \gls{api}) et le modèle \textit{Instructor-Large} (auto-hébergé). Les modèles d'\textit{embedding} sont des modèles prenant en entré un texte (un mot, une phrase, un paragraphe ou un document) et qui produisent en sortie un vecteur numérique de grande taille capturant le sens sémantique du document d'entrée. Par exemple pour le modèle \textit{Instructor-Large}, le vecteur numérique de sortie pour un document possède une dimension de (1, 768). et (1, 1536) pour le modèle d'OpenAI. Ces modèles sont des boites noires, c'est à dire que la signification des centaines (voir milliers dans le cas d'OpenAI) de valeur numérique décrivant le document ne sont pas connues, cependant elles représentent le sens sémantique du texte.
 A partir de ces 4 jeux de données (192 rapports dans 4 conditions: français/anglais et \textit{embedding} par OpenAI ou Instructor), nous avons entraîné et comparé les performances pour la prédiction de diagnostic de deux algorithmes: les \textit{random forest} et les perceptrons (réseaux de neurones simple). Nous avons retiré du jeu de données les 54 rapports sans diagnostic, car ils ne peuvent pas être utilisés pour l'entraînement des modèles à apprentissage supervisé ce qui aboutis à 138 rapports utilisés sur 4 labels différents pour l'entraînement des modèles (\gls{nm}, \gls{com}, \gls{cnm}, non-CM).
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \caption{Nombre de rapports par diagnostic}
 \label{tab:number_patients}
@@ -189,7 +189,7 @@ Autre (non-CM) & 30 \\
 
 \subsection{Résultats des entraînements et performances des systèmes d'\textit{embedding}}
 Au total 8 conditions expérimentales pour la prédiction de diagnostics ont été évaluées: \textit{Embedding} OpenAI vs Instructor, rapports en Français vs traduits Anglais, \textit{Random Forest} vs Perceptrons. Pour chacune des conditions expérimentales, les hyper-paramètres des modèles ont été optimisés par grille et les performances ont été évaluées grâce à 10 cross-validations. Ceci a été fait pour (i) obtenir des modèles avec les meilleures performances possible (optimisation par grille) et (ii) avoir une estimation robuste des performances (moyenne sur 10 essais par cross-validation). L'ensemble des résultats de ces entraînements (métriques de performances et modèles) sont disponibles en ligne à l'adresse: \href{https://wandb.ai/lambda-science/myo-text-classify/}{https://wandb.ai/lambda-science/myo-text-classify/}. 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \caption{Récapitulatif des performances des modèles \textit{MyoClassify}}
 \label{tab:myoclassify_metrics}
@@ -248,7 +248,7 @@ La figure \ref{fig:myosearch_ingest} présente la phase d'ingestion des données
  \label{fig:myosearch_query}
 \end{figure}
 Quand l'ensemble des documents ont été découpés et ingérés dans la base de données, il est possible de réaliser des requêtes. La figure \ref{fig:myosearch_query} présente la phase de requêtage des données. L'utilisateur peut entrer via l'interface web un symptôme d'intérêt en texte libre tel que "surcharge lipidique". Cette requête va ensuite être transformé en vecteur numérique par le modèle d'\textit{embedding }\textit{Instructor}. Ce vecteur va être comparé à la base de données de vecteur pour rechercher le top 5 plus proche voisin grâce à un algorithme nommé \textit{Hierarchical Navigable Small Worlds, HNSW}. Les cinq fragments avec les scores de similarité les plus proches sont ensuite affichés sur l'interface web. Le tableau \ref{tab:myosearch_results} présente les résultats obtenus pour une requête dans MyoSearch. Par exemple pour la requête "surcharge lipidique" les trois rapports les plus proches font mention d'une surcharge en lipides chez des patients dont (i) le diagnostic n'est pas connu, (ii) le diagnostic n'est pas une myopathie congénitale et (iii) chez un patient avec une \gls{nm}. Cette recherche est aussi multi-linguales, en effet le modèle d'\textit{embedding} étant multi-langues, la recherche entre une base de données française et une requête en anglais est possible, ou inversement.
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \caption{Exemple d'une requête et des résultats de \textit{MyoSearch}}
 \label{tab:myosearch_results}

@@ -8,7 +8,7 @@ Chacun des 89 rapports d'histologie ont été numérisés à la main en annotant
 Dans un premier temps j'ai réalisé une analyse statistique exploratoire de ce jeu de données (fig. \ref{fig:impatient_eda}). Ainsi grâce à \gls{impatient} j'ai généré plusieurs visualisation dont des histogrammes, des matrices de corrélations, des tableau de fréquences et des matrice de confusions pour évaluer la méthode \gls{boqa}.  On observe dans notre jeu de données une majorité de patient adultes (49 sur 89). Au niveau des gènes, les gènes TTN, NEB, RYR1 et MYH7 sont les plus souvent responsables de la maladie (40 sur 89). Au niveau diagnostic, les \gls{com} et les \gls{nm} sont les plus communes (28 et 25). Ensuite il y a un grand groupe de patients sans diagnostic clairement établis (23) puis un groupe plus petit de patients à \gls{cnm} (10). Les tableaux des termes les plus fréquents par gène et par diagnostic font ressortir des termes attendues tels que une forte fréquence de bâtonnets sombres dans les \gls{nm}, de noyaux centralisés dans les \gls{cnm} et de cores dans les \gls{com}.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=1\textwidth]{figures/impatient_explo.png}
+  \includegraphics[width=0.98\textwidth]{figures/impatient_explo.png}
   \caption[Analyse statistique exploratoire IMPatienT]{Analyse statistique exploratoire de la base de données IMPatienT. (A) Histogrammes de répartition des patients, (B) Matrice de corrélation des termes du vocabulaire standard.}
   \label{fig:impatient_eda}
 \end{figure}
@@ -23,7 +23,7 @@ L'utilisation de Streamline nous a permis de comparer 11 algorithmes de \gls{ml}
   \caption[Comparaison des courbes ROC]{Comparaison des courbes ROC des 11 algorithmes comparés.}
   \label{fig:roc_curve}
 \end{figure}
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
 \begin{tabular}{lcccc}
 \hline
@@ -48,7 +48,7 @@ ExSTraCS & 0.68 & 0.77 & 0.65 & 0.89 \\
 \label{table:ml_metrics}
 \end{table}        
 L'algorithme \gls{svm} s'est révélé être le meilleur algorithme en terme d'exactitude pondérée. En revanche, l'algorithme de système de classeur ExSTraCS 2.0, qui présente l'avantage d'être très explicable, a affiché une performance légèrement inférieure, avec une exactitude de classification de 0,77 (et de 0,68 pour l'exactitude pondérée). Il est intéressant de noter que l'algorithme de classification naïve bayésienne, qui est à la fois simple et par nature explicable, a obtenu des performances similaires à celles de la SVM, tout en ayant un temps d'entraînement faible de 22 secondes en raison de sa simplicité et de l'absence d'hyper-paramètre à optimiser (table \ref{tab:pipeline_times}). A titre de comparaison, le \gls{lcs} ExSTraCS a nécessité un temps d'entraînement de  9 minutes, et ceci sans phase d'optimisation des hyper-paramètres.
-\begin{table}[h]
+\begin{table}[htbp]
     \centering
     \begin{tabular}{lr}
         \toprule
