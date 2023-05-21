@@ -25,7 +25,7 @@
 \input{configuration/macros}
 \begin{document}
 \maketitle
-\input{liminaires/resumes}
+%\input{liminaires/resumes}
 \include{liminaires/remerciements}
 \tableofcontents[depth=subsubsection,name=Sommaire]
 \include{corps/resume}
@@ -52,5 +52,12 @@
 \appendix
 \include{annexes/annexeI}
 \backmatter
-\makebackcover
+\checkoddpage
+\ifoddpage
+    \mbox{}\newpage % If current page is odd, insert a blank page
+\else
+    % If current page is even, do nothing
+\fi
+\includepdf[pages={1},scale=1,dpi=300]{corps/4emecouv.pdf}
+%\makebackcover
 \end{document}
