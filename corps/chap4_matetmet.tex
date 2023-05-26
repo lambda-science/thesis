@@ -1,23 +1,44 @@
+Dans cette thèse j'ai developpés des méthodes basées sur \gls{ia} pour exploitée les données mutlimodales de patients. Pour cela j'ai utilisé un vaste panel de ressources biologiques, d'outils informatiques et de méthodes \gls{ia}. Dans ce chapitre je vais décrire 'ensemble des outils et ressources utilisées pour construire mes méthodes d'analyse.
+
 \chapter{Outils informatiques et données utilisées}
+
 \section{Données biomédicales de myopathies congénitales}
-\subsection{Rapport histologiques de patient de l'Institut de Myologie de Paris}
+Nous avons développé des méthodes \gls{ia} pour analyser des jeux de données multimodales de myopathies congénitale. Il y a deux principaux type et source de données que nous allons préstenter ici.
+
+\subsection{Comptes rendus de biopsie de l'Institut de Myologie de Paris}
+La première source de donnée provient de l'Institut de Myologie de Paris. Grâce à une collaboration avec l'équipe du laboratoire d’histopathologie d'abord dirigé par Norma B. Romero puis Teresinha Evangelista, nous avons pu récupérer et utiliser 192 comptes rendus de biopsie musculaire de patient atteint de myopathies (congénitales, dystrophies ou autre), dont 138 spécifiquement atteint par des myopathies congénitales identifiée. Ces rapports sous forme papier, ont été scannés puis anonymisés d'abord avec un outil d'anonymisation que nous avons développé (présenté dans le chapitre 7), puis vérifié à la main. La figure \ref{fig:blabla} présente la structure d'un comptes rendus de biopsie anonymisé typique présent dans le jeu de donnée. Il y a deux type de comptes rendus, ceux qui concernent les observations en microscopie photoniques et ceux qui concernent les observations en microscopie électronique.
+
 \subsection{Images de biopsie musculaire de souris}
+Une seconde source de données provient d'une collaboration avec l'\gls{igbmc}, plus spécifiquement avec l'équipe Physiopathologie des maladies neuromusculaires dirigée par Jocelyn Laporte. Cette équipe travaille sur les myopathies congénitales et utilise plusieurs souris modèles de myopathies congénitales. Ainsi en travaillant avec les membres de l'équipe réalisant des biopsies musculaire sur ces modèles, nous avons pu récupérer des développer des méthodes d'analyse pour des biopsie musculaire de souris aux colorations \gls{he}, \gls{sdh}, ATPase et à fluorescence.
+
 \section{Ontologies biologiques}
+En biologie, les ontologies sont des vocabulaires standards pour faciliter l'intégration des données et leur analyse. Dans cette thèse, pour standardiser les données issues des comptes rendus, nous avons utilisés diverses ontologies pré-existantes que nous allons lister ici.
+
 \subsection{Ontologie des phénotypes: HPO}
+L'ontologie \gls{hpo}, 
 \subsection{Ontologie de maladies: ORDO par Orphanet}
 \subsection{Nomenclature génétique: HUGO et HGVS}
+
 \section{Développement de modèle de ML traditionnels et xAI}
 \subsection{Scikit-Learn}
 \subsection{Cross-validation et évaluation des performances}
+schéma cross val avantage moyenne des perfs sur X splits quand petit dataset
+
 \subsection{Rechercher d'hyper-paramètres}
 \subsection{Système de classeurs (LCS)}
+eLCS, XCS, EXSTracts + figure exmple de règles
 \subsection{Pipeline Streamline}
+figure streamline
 \subsection{Métriques de performances}
+F1 score + macro + axct + exact pondérée + MCC
+
 \section{Techniques d'analyse d'images et réseaux de neurones}
 \subsection{Méthode d'analyse d'image traditionnelles avec scikit-image}
+
 \subsection{Modèle pré-entrainé Cellpose et Stardist}
 \subsection{Développement de réseau de neurones profond de type ResNet avec Keras Tensorflow}
-entrainement et inférence RTX 2070Ti 12gb
+entrainement et inférence RTX 2080 Ti 11gb
+
 \section{Développement d'outils basés sur modèles linguistiques de grande taille}
 \subsection{Reconnaissance de text avec Tesseract}
 \subsection{Paramètre de LLMs: context window et température}
@@ -31,17 +52,18 @@ text-embedding-ada-002
 \subsubsection{\textit{Zero-shot, One-shot, Few-shot learning}}
 \subsection{Base de données de vecteurs avec ChromaDB}
 OCR tesseract
+
 \section{Developpment Web}
 \subsection{Back-end avec Flask}
 \subsection{Front-end avec Jquery et Boostrap}
 \subsection{Base de données avec SQLite}
 \subsection{Solution clé en main avec Streamlit}
-\section{Reproductibilité des analyse par intelligence artificielle}
+
+\section{Reproductibilité des analyses par intelligence artificielle}
 \subsection{Suivi d'expérience avec \textit{Weight and Biais}}
 \subsection{Développement open-source et versionnage avec GitHub}
 \subsection{Développement IA open-source et versionnage avec HuggingFace}
 \subsection{Environnement de développement reproductible}
 \subsubsection{Environnement virtuel Python}
 \subsubsection{Docker}
-
 Zenodo mega-repo
