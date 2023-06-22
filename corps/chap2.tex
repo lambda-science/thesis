@@ -143,6 +143,7 @@ Cellpose (\cite{stringer_cellpose_2021}), développé par Carsen Stringer en 202
  \label{fig:cellpose_archi}
 \end{figure}
 \subsubsection{Analyse de séquences: prédiction de sites d'épissage avec Spliceator}
+En plus du traitement d'images, les \gls{cnn} peuvent être utilisés pour traiter des données de type séquences nucléotidiques. Au sein de notre équipe, en 2021, l'outil Spliceator a été developpé (\cite{scalzitti_spliceator_2021}) pour analyser des séquences génomiques et prédire les sites d'épissages. La figure \ref{fig:splice_archi} présente la structure du \gls{cnn} entrainné pour cette tache de classification. Le \gls{cnn} entrainé est capable de prédire les sites d'épissage de plus de 100 espèces vivantes avec une précision de plus de 90\%. L'architecture utilisée par Spliceator est une architecture classique de \gls{cnn} avec trois blocs convolutifs puis une couche \textit{fully-connected} pour la classification, identique à l'exemple en figure \ref{fig:cnn_archi}. Cette architecture a permis d'entrainer un modèle capable de prendre en contexte un contexte jusqu'à 600 nucléotides en amonts et en aval du site d'épissage à évaluer.
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/spliceator_nn.png}
@@ -150,28 +151,80 @@ Cellpose (\cite{stringer_cellpose_2021}), développé par Carsen Stringer en 202
  \label{fig:splice_archi}
 \end{figure}
 
-CNN cool mais information locales ça peut poser problême pour intéraction longue distance notamment, analyse de texte et de séquences. Introducing: les transformers. Dans la prochaine section nous allons voir une seconde architecture permettant de dépasser ces contraintes, capable d'intégrer des informations de contexte global.
+Bien que les \gls{cnn} soient capable d'intégrer de l'information locale pour mimer le fonctionnement du contexte visuel dans le contexte d'analyse d'image, cela peut poser problèmes pour la déttection et l'intégrations d'intéraction longue distance. Par exemple dans le cadre d'analyse de séquences, s'il on cherche à prédire l'expression d'un gène, il est connu qu'il existe des signaux à longue distances qui modulent cette expression, tel que les séquences \textit{enhancers}, dont plus de la moitiés sont situé à des distances de 50 000 paire de base ou plus du gène modulé (\cite{chepelev_characterization_2012}). De mê me pour l'analyse de texte, une information importante pour la compréhension d'une phrase peut être située bien en amont à plusieurs dizaine voir centaines de mots.
+
+Ainsi pour constuire des architectures de \gls{dnn} capable de tacler ces analyse de texte et de séquences, il est necessaire d'avoir des modules capable de prendre en compte le contexte global. Ceci est rendu possible grace à l'architecture nommée \textit{transformers} (\cite{vaswani_attention_2017}), qui sont présentés dans la prochaine section.
 
 
 \section{Architecture transformers et la révolution des modèles linguistiques de grande taille}
-LLMs somme de deux choses: auto-supervisé + transformers 
- Plus récemment encore, grâce aux architectures à base de modules d’attention (\textit{Transformers}), des réseaux de neurones ont été entraînés pour comprendre du langage naturel (texte libre) et en extraire de l’information. 
-https://huyenchip.com/2023/04/11/llm-engineering.html application des LLMs
-\subsection{Modèle linguistiques de grande taille: la ruée vers l'or et modèles d'attentions}
+Les \textit{tranforsmers} sont des architectures qui ont révolutionner le domaine de l'analyse de texte puis leur première description (\cite{vaswani_attention_2017}). Cette architecture a permis de dépasser toute les limitations des architectures précédante, en particulier leur faible mémoire à longue distance. Les modèles \textit{transformers} sont des modèles dit "Seq2Seq" c'est à dire séquence à séquence. Ils prennent en entrée une séquence (une phrase ou une protéine) et produisent en sortie une autre séquence (le phrase traduite par exemple). Pour comprendre comment les \textit{transformers} fonctionnent et quels sont leurs implications, deux notions sont nécessaires: la structure encodeur-décodeur et l'attention multi-tête.
 
+
+
+\subsubsection{La structure encodeur-décodeur et l'attention multi-tête}
+La structure encodeur-décodeur est au coeur de nombreuses architectures et est vitale pour une multitudes de tâches telles que la génération de texte ou la traduction. L'idée derrière cette structure est de compresser l'information d'entrée en un vecteur numérique de taille définie, nommé "état caché" (figure \ref{fig:encoder_decoder}). Puis le décodeur, à partir de cet état caché va générer une séquence (par exemple une phrase) qui correspond à cet état caché. Lors de l'entraînement d'un réseau encodeur-décodeur, les paramtères de l'encodeur et du décodeur sont ajuster pour minimiser la fonction de coût. 
+
+Par exemple, imaginons que l'on veuille construire un réseau de traduction français vers anglais (figure \ref{fig:encoder_decoder}). Pour cela on va utiliser comme donnée d'entraînement des couples de phrase français (entrée) et anglaise (cible). L'entraînement consiste à apprendre à l'encodeur à représenter numériquement les phrases français en extrayant les informations les plus pertinente. L'entraînement du décodeur consiste à apprendre comment à partir de cet état caché, reconstruire la phrase anglais attendue.
+
+Cependant cette structure possède des limites. En effet, pour des phrases très longue ou des paragraphes, l'encodeur n'est pas nécessairement en capacité de représenter toute les informations pertinentes dans l'état caché qui possède une taille fixe, ainsi de l'information pourrait être perdue. Les mécanismes d'attention à l'oeuvre dans les \textit{transformers} permettent de pallier à cette limite.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.66\textwidth]{figures/encoder_decoder.png}
+ \caption[Schéma de la structure encodeur-décodeur]{Schéma de la structure encodeur-décodeur permettant l'encodage d'une donnée dans un état caché puis son décodage pour la traduction par exemple. }
+ \label{fig:encoder_decoder}
+\end{figure}
+
+Dans un \textit{transformers} les encodeurs et les décodeurs sont multiples (au total de 6 dans le papier les décrivant pour la première fois) et ils sont composés de mécanismes d'attentions d'auto-attention multi-tête (figure \ref{fig:encoder_attention}). Le mécanisme d'auto-attention permet à n'importe quel élement de la séquence (mot de la phrase) d'être influencé par les autres éléments. C'est-à-dire que le premier mot d'une phrase peut avoir une influence sur le dernier, ce qui permet une influence longue distance. Mathématiquement cela est possible par la création pour chaque mot de la phrase de trois vecteurs: requête (Q), clé (K) et valeur (V) (non représenté sur la figure \ref{fig:encoder_attention}). Puis par un produit scalaire, un score d'attention est calculé pour tout les couples de mot présent dans la phrase (c'est donc un processus quadratique).
+
+Ces mécanismes d'attention sont divisés en plusieurs tête, qui permettent lors de l'entraînement de spécialiser chacune des tête d'attention sur un aspect spécifique de l'entrée. Par exemple dans le cadre d'un texte, une tête peut être spécialisé dans la syntaxe et une autre dans des aspects sémantiques. 
+La multiplicité des transformers et les mécanismes d'attention multi-têtes permettent au réseaux de traiter des données de grande tailles sans perte d'infromation, c'est-à-dire avec une grande "mémoire". Ainsi cela permet de détecter et d'intégrer lors des prédictions réalisée des informations à longue distance, là où la convolution ne permettait d'intégrer que des informations locales.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.66\textwidth]{figures/encoder_attention.png}
+ \caption[Schéma de la structure encodeur-décodeur d'un réseau transformer]{Schéma de la structure encodeur-décodeur d'un réseau transformer. Chaque encodeur et transformer est composé d'un mécanisme d'attention et d'un réseau à propagation directe.}
+ \label{fig:encoder_attention}
+\end{figure}
+Grâce à cette structure encodeur-décodeur et les mécanismes d'attention multi-tête, il est possible de créer une architecture de \textit{transformer} présentée en figure \ref{fig:transformer}. Cette architectures est composée de deux éléments: à gauche en vert les décodeurs empilé au nombre de 6, qui prennent en entrée la phrase à traduire. A droite en rouge, les décodeurs empilés au nombre de six, prennent à la fois la sortie des décodeurs en compte ainsi que la traduction dont génération a déjà commencé. Dans chaque décodeur et encodeur on retrouve nos modules d'attentions (en violet). L'inférence de cette architecture est une boucle, les mots sont générés un par un à chaque cycle. Ainsi pour la traduction en anglais de la phrase "Je suis un étudiant" au premier cycle le mot "I" sera généré. Ensuite ce mots va être repris en entrée des décodeurs pour générer le suivant.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=1\textwidth]{figures/transformer.png}
+ \caption[Schéma de l'architecture d'un réseau Transformer]{Schéma de l'architecture d'un réseau transformer. Les transformer sont composés de 6 encodeurs empilés, relié à 6 décodeurs empilés, chacun composés de mécanismes d'attention.}
+ \label{fig:transformer}
+\end{figure}
+Ici pour expliquer le fonctionnement des \textit{transformers} nous avons utilsié l'exemple de la traduction de texte. Mais les \textit{transformers} peuvent être utilisables pour n'importe quelles données séquentielles, telles que les séquences génomiques et protéique. Nous allons voir deux exemples d'utilisation de \textit{transformers} pour l'analysis de séquences biologiques à travers Enformer et AlphaFold.
+
+\subsubsection{Enformer: un transformer pour l'expression des gènes}
+Comme écrit précidemment, l'expression des gènes dans le génome est modulée par des interactions longue distance, grace notamment aux \textit{enhancer}. Ainsi s'il on veut constuire des modèles prédictifs de l'expression des gènes il faut avoir une architecture capables de considérer ces intéractions longue distance, c'est précisement l'intérêt des \textit{transformers}. Dans les travaux intitulés "\textit{Effective gene expression prediction from sequence by integrating long-range interactions}" (\cite{avsec_effective_2021}) publié en 2021, une équipe de DeepMind a utilisé un modèle mixant convolutions et transformers pour prédire l'expression des gènes (figure \ref{fig:enformer}. La ou le précédant modèle n'était capable de prendre que 20 000 paires de bases de contexte autour d'un gène pour effectuer sa prédiction, ce nouveau modèle nommé \textit{Enformer} est capable d'étendre le contexte jusqu'à 100 000 paires de bases en amont et en aval du gène. Grace l'examiniation des prédictions réalisée, ils ont réussis à mettre en évidence que le modèle a porté son attention sur la présence d'\textit{enhancer} localisés à 50 000 paires de bases du gène. Ce qui confirme l'intérêt de l'utilisation de transformer dans le cadre de l'analyse de l'expression des gènes et de la prise en compte des \textit{enhancer}.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.8\textwidth]{figures/enformer.png}
+ \caption[Schéma de l'architecture du modèle enformer]{Schéma de l'architecture du modèle enformer. Ce modèle basé sur les \textit{transformers} permet de prendre jusqu'à 100 000 paire de base de contexte génomique pour évaluer l'expression d'un gène (\cite{avsec_effective_2021}).}
+ \label{fig:enformer}
+\end{figure}
+\subsubsection{AlphaFold : un transformer pour le conformation 3D des protéines}
+En 2020, le modèle AlphaFold 2 (\cite{jumper_highly_2021}) a remporté la CASP14 (\href{https://predictioncenter.org/casp14/}{https://predictioncenter.org/casp14/}), compétition de référence dans le domaine la prédiction de structure protéïque. Leur modèle a obtenu un score global de 244 (somme de z-scores), contre 90,8 pour le second meilleurs modèle (\cite{jumper_applying_2021}). Une des caractéristiques principales du modèle AlphaFold est l'usage d'une architecture similaire aux \textit{transformers} (figure \ref{fig:alphafold}). Ces blocs nommé "\textit{evoformer}" utilisent les même mécanismes d'attention à l'oeuvre dans la structure classique des \textit{transformers}. Comme dans le contexte génomique, les interactions 3D qui ont lieu dans les séquences protéiques ne sont pas que locales, ainsi il est nécessaire de pouvoir prendre en compte des intéractions longues distance pour obtenir une prédiction de qualité, grace à ces mécanismes d'attention. L'utilisation de cette architecture a permis le développement d'un outil qui révolutionne le domaine de la biologie structurale rendant possible l'accès à la structure 3D prédite de n'importe quelle protéine du vivant.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=1\textwidth]{figures/alphafold.png}
+ \caption[Schéma de l'architecture du modèle AlphaFold]{Schéma de l'architecture du modèle AlphaFold. Ce modèle utilise les mécanismes d'attention des transformers pour prédire la conformation 3D de protéines à partir de leur séquences et alignements.}
+ \label{fig:alphafold}
+\end{figure}
+
+
+Limite transformers = cout en calcul et données donc à réserver qu'ne cas de necessité (utilisé interaction longue distance, pas forcément en image)
+Plus récemment encore, grâce aux architectures \textit{transformers}, des réseaux de neurones ont été entraînés pour comprendre du langage naturel (texte libre) auquel on peut donner des instructions, introducing les LLMS
+
+\subsection{Modèle linguistiques de grande taille: la ruée vers l'or et modèles d'attentions}
+\subsubsection{Apprentissage auto-supervisé}
 L’année 2023 représente une année clé dans l’histoire du \gls{nlp} avec le développement et la mise à disposition de \gls{llms} généraux performants et accessibles tel que \textit{GPT-3.5-turbo (}souvent nommé à tort \textit{ChatGPT)} ou \textit{LLAMA}. 
 
 
-\subsubsection{Exemple de transformers pour le triatement de séquences: AlphaFold}
-\subsubsection{Exemple de transformers pour le triatement de séquences: Expression Enchancer}
-\subsection{L'apprentissage auto-supervisé}
+génératifs et embeddings + taille hébergement et quantization
+concepte de promptes et instructions (one shot, zero shot, few shot, pas de learning en plus) :)
+https://huyenchip.com/2023/04/11/llm-engineering.html application des LLMs
+
+
 \subsection{Modèle génératifs, models embedding}
 \subsection{Taille des modèles, hébergement, quantization}
-\subsection{Exemple d'application en science}
-DINO
-SAM
-Zero-shot, One-shot, Few-shot learning
 
-
-
-Ces méthodes permettent d’explorer de façon rétrospective et multimodale, l’ensemble des données biomédicales acquises sur des patients sans avoir besoin de réaliser un travail manuel d’annotation trop important.
+Ces méthodes permettent d’explorer de façon rétrospective et multimodale, l’ensemble des données biomédicales acquises sur des patients sans avoir besoin de réaliser un travail manuel d’annotation trop important. NEXT : myopathies congénitales notre cas d'application
