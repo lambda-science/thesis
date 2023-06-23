@@ -157,14 +157,12 @@ Ainsi pour constuire des architectures de \gls{dnn} capable de tacler ces analys
 
 
 \section{Architecture transformers et la révolution des modèles linguistiques de grande taille}
-Les \textit{tranforsmers} sont des architectures qui ont révolutionner le domaine de l'analyse de texte puis leur première description (\cite{vaswani_attention_2017}). Cette architecture a permis de dépasser toute les limitations des architectures précédante, en particulier leur faible mémoire à longue distance. Les modèles \textit{transformers} sont des modèles dit "Seq2Seq" c'est à dire séquence à séquence. Ils prennent en entrée une séquence (une phrase ou une protéine) et produisent en sortie une autre séquence (le phrase traduite par exemple). Pour comprendre comment les \textit{transformers} fonctionnent et quels sont leurs implications, deux notions sont nécessaires: la structure encodeur-décodeur et l'attention multi-tête.
-
-
+Les \textit{tranforsmers} sont des architectures qui ont révolutionner le domaine de l'analyse de texte depuis leur première description (\cite{vaswani_attention_2017}). Cette architecture a permis de dépasser toute les limitations des architectures précédante, en particulier les limites concernant leur faible mémoire à longue distance. Les modèles \textit{transformers} sont des modèles dit "Seq2Seq" c'est à dire séquence à séquence. Ils prennent en entrée une séquence (une phrase ou une séquence protéine) et produisent en sortie une autre séquence (le phrase traduite par exemple). Pour comprendre comment les \textit{transformers} fonctionnent et quels sont leurs implications, deux notions sont nécessaires: la structure encodeur-décodeur et l'attention multi-tête.
 
 \subsubsection{La structure encodeur-décodeur et l'attention multi-tête}
 La structure encodeur-décodeur est au coeur de nombreuses architectures et est vitale pour une multitudes de tâches telles que la génération de texte ou la traduction. L'idée derrière cette structure est de compresser l'information d'entrée en un vecteur numérique de taille définie, nommé "état caché" (figure \ref{fig:encoder_decoder}). Puis le décodeur, à partir de cet état caché va générer une séquence (par exemple une phrase) qui correspond à cet état caché. Lors de l'entraînement d'un réseau encodeur-décodeur, les paramtères de l'encodeur et du décodeur sont ajuster pour minimiser la fonction de coût. 
 
-Par exemple, imaginons que l'on veuille construire un réseau de traduction français vers anglais (figure \ref{fig:encoder_decoder}). Pour cela on va utiliser comme donnée d'entraînement des couples de phrase français (entrée) et anglaise (cible). L'entraînement consiste à apprendre à l'encodeur à représenter numériquement les phrases français en extrayant les informations les plus pertinente. L'entraînement du décodeur consiste à apprendre comment à partir de cet état caché, reconstruire la phrase anglais attendue.
+Par exemple, imaginons que l'on veuille construire un réseau de traduction français vers anglais (figure \ref{fig:encoder_decoder}). Pour cela on va utiliser comme donnée d'entraînement des couples de phrase français (entrée) et anglaise (cible). L'entraînement consiste à apprendre à l'encodeur à représenter numériquement les phrases françaises en extrayant les informations les plus pertinente. L'entraînement du décodeur consiste à apprendre comment à partir de cet état caché, reconstruire la phrase anglais attendue.
 
 Cependant cette structure possède des limites. En effet, pour des phrases très longue ou des paragraphes, l'encodeur n'est pas nécessairement en capacité de représenter toute les informations pertinentes dans l'état caché qui possède une taille fixe, ainsi de l'information pourrait être perdue. Les mécanismes d'attention à l'oeuvre dans les \textit{transformers} permettent de pallier à cette limite.
 \begin{figure}[!htbp]
@@ -184,7 +182,7 @@ La multiplicité des transformers et les mécanismes d'attention multi-têtes pe
  \caption[Schéma de la structure encodeur-décodeur d'un réseau transformer]{Schéma de la structure encodeur-décodeur d'un réseau transformer. Chaque encodeur et transformer est composé d'un mécanisme d'attention et d'un réseau à propagation directe.}
  \label{fig:encoder_attention}
 \end{figure}
-Grâce à cette structure encodeur-décodeur et les mécanismes d'attention multi-tête, il est possible de créer une architecture de \textit{transformer} présentée en figure \ref{fig:transformer}. Cette architectures est composée de deux éléments: à gauche en vert les décodeurs empilé au nombre de 6, qui prennent en entrée la phrase à traduire. A droite en rouge, les décodeurs empilés au nombre de six, prennent à la fois la sortie des décodeurs en compte ainsi que la traduction dont génération a déjà commencé. Dans chaque décodeur et encodeur on retrouve nos modules d'attentions (en violet). L'inférence de cette architecture est une boucle, les mots sont générés un par un à chaque cycle. Ainsi pour la traduction en anglais de la phrase "Je suis un étudiant" au premier cycle le mot "I" sera généré. Ensuite ce mots va être repris en entrée des décodeurs pour générer le suivant.
+Grâce à cette structure encodeur-décodeur et les mécanismes d'attention multi-tête, il est possible de créer une architecture de \textit{transformer} présentée en figure \ref{fig:transformer}. Cette architectures est composée de deux éléments: à gauche en vert les décodeurs empilé au nombre de 6, qui prennent en entrée la phrase à traduire. A droite en rouge, les décodeurs empilés au nombre de six, prennent à la fois la sortie des encodeurs en compte ainsi que la traduction dont la génération a déjà commencé. Dans chaque décodeur et encodeur on retrouve nos modules d'attentions (en violet). L'inférence de cette architecture est une boucle, les mots sont générés un par un à chaque cycle. Ainsi pour la traduction en anglais de la phrase "Je suis un étudiant" au premier cycle le mot "I" sera généré. Ensuite ce mot va être repris en entrée des décodeurs pour générer le suivant.
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=1\textwidth]{figures/transformer.png}
@@ -210,21 +208,73 @@ En 2020, le modèle AlphaFold 2 (\cite{jumper_highly_2021}) a remporté la CASP1
  \label{fig:alphafold}
 \end{figure}
 
+Bien que les \textit{transformers} présente une grand avancée de le domaine des \gls{dnn} avec la prise en compte des intéractions longue distances, ils présentent un certain nombre de limite qui doivent être considérée avant leur utilisation. Tout d'abord en termes de cout de calculs, les transformers par leur mécanismes d'attention (processus quadratric) sont très couteux en mémoire et en ressource pour le traitement de longue séquences. Ensuite, les \textit{transformers} ont besoin d'une quantité de données plus importantes pour leur entrainnement que des architecture moins complexe, ce qui peut être un problême dans le domaine biomédicale (\cite{willemink_toward_2022}). Enfin, alors que pour les \gls{cnn} il existe des méthodes d'explicabilité ad-hoc, les transformers étant plus complexe et récent, les techniques d'explicabilité à diposition sont moindre, mais c'est un domaine recherche actif (\cite{kim_can_2022, saha_explainability_2022}). 
 
-Limite transformers = cout en calcul et données donc à réserver qu'ne cas de necessité (utilisé interaction longue distance, pas forcément en image)
-Plus récemment encore, grâce aux architectures \textit{transformers}, des réseaux de neurones ont été entraînés pour comprendre du langage naturel (texte libre) auquel on peut donner des instructions, introducing les LLMS
+Ainsi l'utilisation des \textit{transformers} est a réserver pour les tâches qui ne sont pas accomplissable par des architectures plus simple. Une de ces taches est la compréhension du language naturel, donc l'architecture \textit{transformer} a permis de révolutionner le traitement grace aux \gls{llms} que nous présentons dans la prochaine section.
 
-\subsection{Modèle linguistiques de grande taille: la ruée vers l'or et modèles d'attentions}
+\subsection{La ruée vers l'or des modèles linguistiques de grande taille}
+Les années 2022-2023 représentent des années clés dans l’histoire du \gls{nlp} avec le développement et la mise à disposition de \gls{llms} généraux performants et accessibles tel que \textit{GPT-3.5-turbo (}souvent nommé à tort \textit{ChatGPT)} ou \textit{LLaMA} (\cite{touvron_llama_2023}).  Ces modèles représente une véritable révolution dans le traitement des données textuelles non structurés car ils sont capables de suivre des instructions précises et extrement variée, dans de multiple langues. Dans un le long papier de 155 pages nommé "\textit{Sparks of Artificial General Intelligence: Early experiments with GPT-4}" publié en avril 2023 par une partie de l'équipe ayant travaillé sur le modèle GPT-4 d'OpenAI (\cite{bubeck_sparks_2023}) les auteurs dressent un portrait des capacités des \gls{llms} et de leur possibles impact sociétaux.
+
+Pour ne citer que quelques exemples des capacités des \gls{llms}, ces modèles sont capable de résumer des articles scientifique en une série de points clés, de générer du code informatiques et d'en corriger les erreurs, d'extraire des informations spécifique d'un texte, de répondre à des questions de logique, d'expliquer des blagues, d'écrire des histoires créatives, d'analyser des images et d'interagir avec le monde extérieur via des requêtes internet. Ces modèles ont donc des capacités extrêment vastes avec des performances proches de l'Homme. Les modèles \gls{llms} sont très divers et en constante évolution. La figure \ref{fig:llm-tree} (\cite{yang_harnessing_2023}) retrace les principaux modèles développés entre 2018 et 2023 où l'on observe une nette évolution entre 2022 et 2023 avec une multitude de modèles ouvert ou fermés développés.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=1\textwidth]{figures/llm_tree.png}
+ \caption[Arbre du développement LLMs de 2018 à 2023 (\cite{yang_harnessing_2023})]{Arbre du développement LLMs de 2018 à 2023 (\cite{yang_harnessing_2023})}
+ \label{fig:llm-tree}
+\end{figure}
+Le développement de tels modèles a été rendu possible par l'utilisation de deux innovations en plus des \textit{transformers}: l'\gls{ssl} et l'\gls{rlhf}.
+
 \subsubsection{Apprentissage auto-supervisé}
-L’année 2023 représente une année clé dans l’histoire du \gls{nlp} avec le développement et la mise à disposition de \gls{llms} généraux performants et accessibles tel que \textit{GPT-3.5-turbo (}souvent nommé à tort \textit{ChatGPT)} ou \textit{LLAMA}. 
+En mars 2021, Yann Lecun a écrit un billet de blog qualifiant l'apprentissage auto-supervisé comme la matière noir de l'intelligence \textit{(Self-supervised learning: The dark matter of intelligence}, \cite{lecun_self-supervised_2021}). Dans ce billet il explique que l'apprentissage auto-supervisé est l'une de voies les plus prometteuses pour constuire des connaissances de fond dans les modèles \gls{ia}.
 
 
-génératifs et embeddings + taille hébergement et quantization
-concepte de promptes et instructions (one shot, zero shot, few shot, pas de learning en plus) :)
+L'idée derrière le \gls{ssl} part d'un constat: l'ensemble des modèles d'\gls{ia} nécessitent un jeu de données bien anotés pour leur entraînement. Or, il est facile d'acquérir un grand nombre de données non-anontés, le goulot d'étranglement se situe dans l'annotation et la labellisation des jeux de données. Par exemple, il est facile de siphoner un grand nombre de page internet et d'en extraire le texte. Comment utiliser ces données non-anontés pour entrainner un modèle de langage ? Est-il possible de définir une méthode d'apprentissage à partir des données non-annotés ? C'est précisement l'intérêt du \gls{ssl}.
+
+
+Le fonctionnement du \gls{ssl} est relativement simple, dans une phase de pré-entraînement, le modèle va apprendre à ré-créer les données qui lui sont fournies. Par exemple, si l'on veut créer un modèle de langage, on peut lors de ce pré-entrainnement lui fournir une phrase tels que: \\
+"Les modèles\gls{ia} sont des systèmes complexes capable de réaliser des prédiciton". \\
+Pour le pré-entrainnement du modèle par \gls{ssl} on va cacher certains mots de la phrase en entainer le modèle à prédire le mot attendu. Ainsi on obtient la phrase: \\
+"Les modèles\gls{ia} sont des systèmes [?] capable de réaliser des [?]" \\
+et pour chaque point d'interrogation, le modèle va être entraîné à prédire les mots "complexes" et "prédictions" avec une grande probabilité. Par cette méthode il est possible d'utiliser des données non-anontées pour réaliser un pré-entainnement qui permet au modèle une meilleure compréhension de la structure d'un texte et de la relation entre les mots. Après ce pré-entrainnement, l'entrainement classique du modèle peut avoir lieu, avec un nombre de données annotées plus limité que sans le pré-entrainnement par \gls{ssl}.
+
+
+Le concept de \gls{ssl} n'est pas uniquement limité au texte, le principe est similaire avec des images. Par exemple il est possible de diviser une image en 16 zones carrées, de masquer une de ces zone et d'entraîner le modèles à ré-générer la zone en guise de pré-entraînement. Il a été montré sur le jeu d'évaluation ImageNet, que ce pré-entrainenemnt permet d'obtenir de meilleur performances de classifications avec une quantité de données moindre (\cite{goyal_self-supervised_2021})
+
+\subsubsection{Apprentissage par renforcement avec retour humain}
+L'apprentissage par renforcement avec retour humain est une méthode qui a permis l'amélioration des performances des \gls{llms} (\cite{ziegler_fine-tuning_2020, stiennon_learning_2020}). Cette méthode permet non seulement de réduire les biais dans le modèle grace à une intervention humaine (biais raciaux, de genre, religieux, \cite{ganguli_red_2022}) mais aussi de créer un modèle capable de suivre des instructions (\cite{ouyang_training_2022}).
+
+Après le pré-entrainnement par \gls{ssl} et l'entrainnement classique du modèle avec des données annotées, les sortie du modèle vont être affinée par apprentissage par renforcement. Plusieurs exemples de générations pour une instruction vont être présenté à un humain qui va devoir classer les réponses dans un ordre de préférence. Le modèle va ainsi obtenir une pénalité ou une récompense pour chaque réponse, ce qui permet d'affiner ses futures réponse. Ainsi le retour humain est intégré à l'entraînement du modèle par ce mécanisme d'apprentissage par renforcement pour rentre le modèle moins biaisé et qualitatif.
+
+\subsection{Les modèles génératifs et modèles d'embedding}
+Les \gls{llms} se déclinent sous deux formes principales avec des utilisations différentes: les modèles génératifs et les modèles d'\textit{embedding}. La figure \ref{fig:llm-type} présente les deux types de modèles.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=1\textwidth]{figures/two_llm.png}
+ \caption[Schéma des deux types de LLMs]{Schéma des deux types de LLMs}
+ \label{fig:llm-type}
+\end{figure}
+Les modèles de type \textit{embedding} consistent à transformer notre texte d'entrée en vecteur numérique de grande taille. L'idée derrière cette transformation est que deux phrases ayant un sens similaire (sens sémantique) ont une reprétenstation numérique similaire. Transformer le texte en vecteur numérique permet de réaliser des opérations, tel que de la recherche de similairité entre deux phrases, mais aussi du clustering, de la visualisation graphique ou encore l'entrainnement de modèles de classification. Le concept d'\textit{embedding} est donc un réel couteaux suisse dans pour analyse et rechercher de la similarité entre du texte et il est en général multi-langue: deux phrases identiques mais dans une langue différente vont avoir une représentation numérique similaire. La figure \ref{fig:sentence_embed}  (\cite{luis_serrano_what_2023}) présente une visualisation de l'embedding de 9 phrases en deux dimensions. On observe sur cette figure que les phrases traitant d'un sujet similaire sont regroupée en sous-groupe dans l'espace. On observe un groupe qui concerne les chiens, un groupe concernant le football et un groupe concernant une question de type "comment vas-tu". Cet exemple est simplifié à des fins de représentation car les phrases ne sont encodées qu'en deux dimensions. En réalité pour capturer des nuances complexes dans les phrases, les modèles d'\textit{embedding} encodent les phrases en plusieurs centaines voir milliers de dimensions.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.66\textwidth]{figures/sentence_embed.png}
+ \caption[Visualisation d'embedding de 9 phrases en 2 dimensions]{Visualisation d'embedding de 9 phrases en 2 dimensions (\cite{luis_serrano_what_2023})}
+ \label{fig:sentence_embed}
+\end{figure}
+Les modèles génératifs sont des modèles de complétions. A partir d'un texte en entrée ils génèrent un texte de sortie. Ces modèles sont utiles pour des tâches créatives comme la génération d'histoire ou de code, mais aussi pour suivre des instructions précises tel l'extraction d'information d'un texte comme la récapitulation d'un article scientifique. Le texte en entrée contenant les instructions pour le modèle est nommé prompt (figure \ref{fig:llm-prompt}). Le défi dans l'utilisation des modèles génératifs réside dans la création d'un prompt adaptés aux résultats que l'on souhaite obtenir. Le processus de création et d'affinage d'un prompt pour une tâche se nomme "\textit{prompt engineeing}". Classiquement un prompt possède une structure de base en quatre éléments: (i) la description précise de la tâche, (ii) un exemple de réalisation de la tache et de sortie attendu (iii) le texte que l'on souhaite analyser, (iv) un indicateur de sortie indiquant au modèle qu'on attend une réponse. L'avantage des modèles génératifs réside dans le fait qu'aucun apprentissage supplémentaire n'est nécessaire, le point central étant l'établissement d'un prompt optimal.
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.66\textwidth]{figures/promt_llm.png}
+ \caption[Schéma du concept de prompt pour les LLMs génératifs]{Schéma du concept de prompt pour les LLMs génératifs}
+ \label{fig:llm-prompt}
+\end{figure}
+
+\subsection{Taille des modèles, hébergement, quantization}
+tableau des tailles
+papier émergence de capacité taille minimal
 https://huyenchip.com/2023/04/11/llm-engineering.html application des LLMs
 
 
-\subsection{Modèle génératifs, models embedding}
-\subsection{Taille des modèles, hébergement, quantization}
-
 Ces méthodes permettent d’explorer de façon rétrospective et multimodale, l’ensemble des données biomédicales acquises sur des patients sans avoir besoin de réaliser un travail manuel d’annotation trop important. NEXT : myopathies congénitales notre cas d'application
+
+CONCLUSIONS GENERALE INTRO Into le coeur du propos
