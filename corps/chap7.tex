@@ -4,13 +4,13 @@
 Les récentes avancées dans le \gls{nlp} ont permis de révolutionner la manière de traiter et d'exploiter les données sous forme de texte libre. \gls{impatient} utilise un système à base de règles et de correspondance exacte des mots pour analyser les comptes-rendus de biopsie. Cette approche présente des limites importantes en terme de flexibilité et de précision et demande l'établissement d'un vocabulaire normalisé au préalable. 
 
 Récemment, la mise à disposition de \gls{llms} performants et accessibles ouvre la porte à la création d'outils plus performants et flexibles pour le traitement de ces comptes-rendus. Ces systèmes basés sur une approche sémantique et multi-langues éliminent la nécessité de définir un vocabulaire standard. Ansi nous avons développé \gls{nlmyo} (fig \ref{fig:nlmyo_logo}), une boite à outils basée sur les \gls{llms} mettant à disposition quatre outils généralistes pour le traitement de comptes-rendus médicaux: outil d'anonymisation, d'extraction d'information, de classification automatique et de création de moteur de recherche. L'ensemble de ces outils et des modèles utilisés est représenté dans la figure \ref{fig:nlmyo_struct}.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.5\textwidth]{figures/nlmyo_banner.png}
  \caption[Logo NLMyo]{Logo de NLMyo}
  \label{fig:nlmyo_logo}
 \end{figure}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/nlmyo_struct.png}
  \caption[Structure de NLMyo]{Structure de NLMyo}
@@ -24,7 +24,7 @@ Afin de traiter un grand volume de rapports et d'éliminer le travail manuel né
 \subsection{Anonymisation par RegEx}
 En première intention, nous avons développé une méthode basée sur les \gls{regex} pour leur simplicité à mettre en place et leur rapidité d'exécution (coûts en puissance de calcul faible). Le tableau \ref{tab:regex} liste les \gls{regex} utilisées pour capturer les informations de noms et de dates. Les comptes-rendus de biopsie sont semi-structurés. Pour la plupart le nom du patient est facilement identifiable car il est précédé par le préfixe: "Nom: ". Ceci est facilement capturable par la première \gls{regex} listée dans le tableau. Ensuite pour les autres cas de figure, comme les noms de famille sont souvent en majuscule et les prénoms commencent souvent pas une majuscule, nous avons développé deux autres \gls{regex} pour capturer les couples de mots dont un est en majuscule et le second commence par une majuscule (ou inversement, ligne 2 et 3 du tableau). 
 Ensuite, une troisième \gls{regex} a été ajoutée pour détecter les dates au format JJ-MM-AAAA ou JJ.MM.AAAA (ligne 3 du tableau). Finalement une dernière \gls{regex} est utilisée pour essayer de trouver le numéro de biopsie dans le document afin de renommer le fichier avec un nom unique et anonyme (ligne 4 du tableau). 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Expressions régulières pour extraire les noms et les dates}
 \label{tab:regex}
@@ -38,7 +38,7 @@ Date & ([(.]?[0-9]\{1,2\}[./][0-9]\{1,2\}[./][0-9]\{1,4\}[().]?) & 01/01/2023, 0
 N° Biopsie & ([0-9]\{3,8\}[-/]?[0-9]\{0,3\}) & 9876-54, 1234/56 \\ \hline
 \end{tabular}
 \end{table}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/regex.png}
  \caption[Exemple anonymisation RegEx]{Exemple d'anonymisation d'un rapport de biopsie factice avec la méthode RegEx. En haut le rapport à l'état brut, en bas le rapport censuré.}
@@ -46,7 +46,7 @@ N° Biopsie & ([0-9]\{3,8\}[-/]?[0-9]\{0,3\}) & 9876-54, 1234/56 \\ \hline
 \end{figure}
 
 La figure \ref{fig:regex} présente les résultats de la technique d'anonymisation par \gls{regex} sur l'entête d'un rapport factice de patient mais avec une structure similaire aux rapports de l'institut de myologie de Paris. Les noms et les dates ont été censurés correctement et la méthode a produit de bon résultats. Cependant, cette méthode est insuffisante car elle est peu sensible et spécifique. Le tableau \ref{tab:regex_fail} liste trois exemples de cas où cette méthode ne fonctionne pas et produit des erreurs. Il est possible de corriger ces erreurs en augmentant la somme de \gls{regex} utilisées, mais augmenter le nom de \gls{regex} augmente aussi potentiellement le nombre de faux positifs. De plus, il n'est pas toujours possible de construire une \gls{regex} adaptée pour extraire une information précise. Nous avons alors exploré la capacité des \gls{llms} pour la recherche et l'extraction de ces informations de manière plus robuste et flexible que la méthode \gls{regex}.
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Exemples de faux positifs ou faux négatifs de la méthode RegEx}
 \label{tab:regex_fail}
@@ -87,7 +87,7 @@ SORTIE :
 La partie précédant le mot clé "ENTREE" correspond à l'instruction décrivant précisément la tâche que le modèle doit réaliser (liste des informations à extraire, format de sortie et comportement attendu). Le premier couple "ENTREE" et "SORTIE" correspond à un exemple de réalisation de la tâche, ce qui permet de spécifier le schéma JSON attendu au modèle (\textit{one-shot learning}). Puis le second couple "ENTREE", "SORTIE" correspond à l'endroit où l'on injecte notre texte d'intérêt à analyser et spécifie au modèle que l'on attend maintenant une sortie textuel au format JSON pour l'entrée précédente.
 
 \subsection{Exemple et comparaison à la méthode RegEx}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/llms_anonym.png}
  \caption[Exemple anonymisation LLMs]{Exemple d'anonymisation d'un courrier médical factice avec la méthode par LLMs. (A) Texte brut, (B) Anonymisation par RegEx, (C) JSON brut généré par le \gls{llms} GPT-3.5-turbo (OpenAI), (D) Anonymisation à partir du JSON généré par \gls{llms}.}
@@ -120,7 +120,7 @@ SORTIE :
 
 \subsection{Exemple d'extraction d'information}
 Pour cet exemple d'utilisation, nous avons généré un rapport factice de patient avec une structure similaire aux rapports de l'institut de myologie de Paris qui reprend des observations typiques trouvées dans les rapports réels de biopsie. Ce rapport est disponible en figure \ref{fig:factice_report}. 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/pdf_biopsie.png}
  \caption[Rapport de biopsie factice]{Exemple rapport de biopsie factice}
@@ -130,7 +130,7 @@ Pour cet exemple d'utilisation, nous avons généré un rapport factice de patie
 Les résultats de l'extraction d'informations présentés dans le tableau \ref{tab:json_data} montrent que le modèle d'\textit{OpenAI} GPT-3.5-turbo est capable d'extraire l'ensemble des informations demandées de manière satisfaisante tout en étant capable de détecter l'absence de certaines informations. Concernant le modèle \textit{Vicuna-7B}, qui a l'avantage d'être auto-hébergé et donc d'être utilisable pour des données sensibles, les performances sont moindres. En effet, six données sur treize (diagnostic et anomalies) demandées sont tout simplement manquantes dans le JSON de sortie. Cependant, pour les sept données (nom, âge, dates, muscle et numéro de biopsie) présentes, les résultats sont satisfaisants, le modèle a extrait les bonnes informations.
 
 Il est important de noter qu'en terme de ressources de calcul et de temps d'inférence, \textit{GPT-3.5} possède un avantage non-négligeable car ce modèle n'est accessible que par une \gls{api}. Les coûts de calcul pour l'application sont donc nuls et la requête ne prend que quelques secondes à être réalisée. Pour \textit{Vicuna}, le modèle étant auto-hébergé, chaque requête requiert une quantité importante de ressources de calcul et monopolise ces ressources pour un temps important (environ 1min30 par document). Ces coûts en ressources et en temps de calcul couplés à une précision moindre, rendent difficile l'exploitation de modèle \gls{llms} génératif auto-hébergé pour la tâche d'extraction d'informations à travers une interface en ligne.
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Résultats de \textit{MyoExtract} pour \textit{GPT-3.5-turbo} and \textit{Vicuna7B}}
 \label{tab:json_data}
@@ -155,7 +155,7 @@ Anomalie Phospho. & N/A & \textit{missing} \\ \hline
 
 \section{\textit{MyoClassify}: un outil d'aide au diagnostic}
 L'outil \textit{MyoClassify} a pour objectif de suggérer un diagnostic parmi les 3 types majoritaires de \gls{mc} (\gls{nm}, \gls{com}, \gls{cnm}) de manière automatique sur la base du rapport de biopsie brut. Pour cela, nous avons utilisé comme jeu de données un corpus élargi de 192 rapports de biopsies fournis par l'institut de myologie de Paris labellisés selon 5 classes (tableau \ref{tab:number_patients}: \gls{nm}, \gls{com}, \gls{cnm}, diagnostic différent des 3 sous-types majoritaires (\textit{non-CM}) et pas de diagnostic final établi (\textit{UNCLEAR}).
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/myoclassify_flow.png}
  \caption[Entraînement modèle \textit{MyoClassify}]{Étapes de préparation et d'entraînement des modèles de \textit{MyoClassify}}
@@ -166,7 +166,7 @@ La figure \ref{fig:myoclassify_flow} représente l'ensemble des étapes réalis�
 
 La contenu de chaque rapport (texte brut sans la partie conclusion) a été traduit en anglais grâce à l'\gls{api} DeepL afin de comparer les performances sur les textes anglais (traduit) et français (orignaux). Puis ces textes ont été encodés numériquement grâce à deux modèles\gls{llms} d'\textit{embedding}: le modèle d'OpenAI (disponible uniquement via \gls{api}) et le modèle \textit{Instructor-Large} (auto-hébergé). Les modèles d'\textit{embedding} sont des modèles qui prennent en entrée un texte (un mot, une phrase, un paragraphe ou un document) et qui produisent en sortie un vecteur numérique de grande taille capturant le sens sémantique du document d'entrée. Par exemple pour le modèle \textit{Instructor-Large}, le vecteur numérique de sortie pour un document possède une dimension de (1, 768) et (1, 1536) pour le modèle d'OpenAI. Ces modèles sont des boites noires, c'est à dire que la signification des centaines (voire des milliers dans le cas d'OpenAI) de valeurs numériques décrivant le document ne sont pas connues, cependant elles représentent le sens sémantique du texte.
 A partir de ces 4 jeux de données (192 rapports dans 4 conditions: français/anglais et \textit{embedding} par OpenAI/Instructor), nous avons entraîné et comparé les performances pour la prédiction de diagnostic de deux algorithmes: les \textit{random forest} et les perceptrons (réseaux de neurones simples). Nous avons retiré du jeu de données les 54 rapports sans diagnostic, car ils ne peuvent pas être utilisés pour l'entraînement des modèles à apprentissage supervisé ce qui aboutit à 138 rapports utilisés sur 4 labels différents pour l'entraînement des modèles (\gls{nm}, \gls{com}, \gls{cnm}, non-CM).
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Nombre de rapports par diagnostic}
 \label{tab:number_patients}
@@ -189,7 +189,7 @@ Autre (non-CM) & 30 \\
 
 \subsection{Résultats des entraînements et performances des systèmes d'\textit{embedding}}
 Au total 8 conditions expérimentales pour la prédiction de diagnostics ont été évaluées: \textit{Embedding} OpenAI vs Instructor, rapports en Français vs traduits Anglais, \textit{Random Forest} vs Perceptrons. Pour chacune des conditions expérimentales, les hyper-paramètres des modèles ont été optimisés par grille et les performances ont été évaluées grâce à 10 cross-validations. Ceci a été fait pour (i) obtenir des modèles avec les meilleures performances possibles (optimisation par grille) et (ii) avoir une estimation robuste des performances (moyenne sur 10 essais par cross-validation). L'ensemble des résultats de ces entraînements (métriques de performances et modèles) sont disponibles en ligne à l'adresse: \href{https://wandb.ai/lambda-science/myo-text-classify/reports/MyoClassify-all-conditions-results--Vmlldzo0NDMyMTcw}{https://wandb.ai/lambda-science/myo-text-classify/reports/MyoClassify-all-conditions-results--Vmlldzo0NDMyMTcw}. 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Récapitulatif des performances des modèles \textit{MyoClassify}}
 \label{tab:myoclassify_metrics}
@@ -206,13 +206,13 @@ Openai FR MLPC & 0.6377 & 0.6 & 0.6345 & 0.6128 & 0.5385 \\ \hline
 \textbf{Openai EN MLPC} & \textbf{0.6957} &\textbf{0.6666}& \textbf{0.6931} &\textbf{ 0.68} & \textbf{0.6429} \\ \hline
 \end{tabularx}
 \end{table}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/histo_myoclassify.png}
  \caption[Histogrammes des performances des modèle \textit{MyoClassify}]{Histogrammes des performances des modèles \textit{MyoClassify} pour le score F1-macro (haut) et le score F1 pour la classe minoritaire (CNM) uniquement (bas)}
  \label{fig:myoclassify_histo}
 \end{figure}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/matrix_conf_myoclassify.png}
  \caption[Matrice de confusion \textit{MyoClassify}]{Matrice de confusion des modèles \textit{MyoClassify} pour le moins bon (\textit{instructor\_en\_rf} en haut) et le meilleur modèle (\textit{openai\_en\_mlpc} en bas) en terme de score F1}
@@ -229,7 +229,7 @@ En terme de performances brutes, il semble recommandable de: (i) traduire les co
 L'\textit{embedding} permet de représenter un texte sous forme numérique en capturant son sens sémantique. Il est alors possible de calculer un score de similarité entre une requête en texte libre et une masse de documents pour trouver le document le plus proche. Avec \textit{MyoSearch} nous avons créé un outil qui permet de faire des requêtes en texte libre parmi l'ensemble des rapports de biopsies de patients disponibles. Il est alors possible de chercher rapidement chez quels patients un symptôme ou diagnostic particulier est présent. Cette création de moteur de recherche est totalement automatique et ne nécessite aucun travail d'annotation. Elle se déroule en deux phases: (i) l'ingestion des données pour constituer la base de données puis (ii) la phase de requêtage de la base de données en fonction de l'entrée de l'utilisateur.
 
 \subsection{Ingestion des rapports: création de la base de données de vecteurs}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/myosearch_ingest.png}
  \caption[Ingestion des données dans \textit{MyoSearch}]{Schéma de l'ingestion des données pour le moteur de recherche \textit{MyoSearch}}
@@ -241,14 +241,14 @@ A la différence de \textit{MyoClassify}, cette fois ci nous ne voulons pas gén
 La figure \ref{fig:myosearch_ingest} présente la phase d'ingestion des données. Nous avons d'abord détecté le texte des rapports PDF par \gls{ocr}. Comme cette détection est hétérogène et bruitée, il est difficile de trouver les bornes exact des phrases. Dès lors, nous avons fragmenter le contenu en fragments de taille maximale de 100 \textit{tokens} (environ 30 à 50 mots) avec un recouvrement de 50. Pour 192 rapports, cela représente 8220 fragments de texte. Pour ces 8220 fragments nous avons calculé leur \textit{embedding} grâce au modèle \textit{Instructor} et les avons intégrés dans une base de données \textit{ChromaDB}, spécifique au stockage et requêtage de vecteurs. Pour chaque fragment, il est possible d'ajouter des méta-données qui peuvent servir de filtre pour les requêtes comme le diagnostic final ou le gène responsable de la maladie.
 
 \subsection{Requêtage des données}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/myosearch_query.png}
  \caption[Requêtage des données dans \textit{MyoSearch}]{Schéma du requêtage des données dans \textit{MyoSearch}}
  \label{fig:myosearch_query}
 \end{figure}
 Quand l'ensemble des documents a été découpé et ingéré dans la base de données, il est possible de réaliser des requêtes. La figure \ref{fig:myosearch_query} présente la phase de requêtage des données. L'utilisateur peut entrer via l'interface web un symptôme d'intérêt en texte libre tel que "surcharge lipidique". Cette requête va ensuite être transformée en vecteur numérique par le modèle d'\textit{embedding }\textit{Instructor}. Ce vecteur va être comparé à la base de données de vecteurs pour rechercher les top 5 plus proches voisins grâce à un algorithme nommé \textit{Hierarchical Navigable Small Worlds, HNSW}. Les cinq fragments avec les scores de similarité les plus proches sont ensuite affichés sur l'interface web. Le tableau \ref{tab:myosearch_results} présente les résultats obtenus pour une requête dans MyoSearch. Par exemple pour la requête "surcharge lipidique" les trois rapports les plus proches font mention d'une surcharge en lipides chez des patients dont (i) le diagnostic n'est pas connu, (ii) le diagnostic n'est pas une myopathie congénitale et (iii) chez un patient avec une \gls{nm}. Cette recherche est aussi multilingue, le modèle d'\textit{embedding} autorise des recherches entre une base de données française avec requête en anglais, ou inversement.
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Exemple d'une requête et des résultats de \textit{MyoSearch}}
 \label{tab:myosearch_results}

@@ -4,7 +4,7 @@ Les outils présentés précédemment ont pour vocation de traiter et d'explorer
 
 \gls{myoquant}, l'outil présenté dans ce chapitre, est une suite de méthodes pour quantifier différents marqueurs pathologiques dans les biopsies de \gls{mc}. \gls{myoquant} intègre soit des méthodes algorithmiques simples basées sur des modèles d'\gls{ia} généralistes en histologie comme CellPose (\cite{stringer_cellpose_2021}) et Stardist (\cite{weigert_star-convex_2020}), soit des méthodes basées sur des modèles \gls{ia} développés à partir de nos données. Actuellement, \gls{myoquant} est capable de quantifier des marqueurs pathologiques dans trois des cinq colorations réalisées en routine lors du diagnostic des \gls{mc}: la centralisation des noyaux à la coloration \gls{he}, un déséquilibre dans le ratio des fibres de type 1 et 2 à la coloration ATPase et une répartition anormale des mitochondries dans les fibres musculaires à la coloration \gls{sdh}. Dans ce chapitre, nous allons voir comment ont été implémentées ces solutions de quantification automatique et des exemples d'application.
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/myoquant_logo.png}
  \caption[Logo MyoQuant]{Logo de MyoQuant}
@@ -13,7 +13,7 @@ Les outils présentés précédemment ont pour vocation de traiter et d'explorer
 
 \section{Analyse de la position des noyaux cellulaires}
 Dans un premier temps, nous nous sommes intéressés à l'analyse de la position des noyaux cellulaires dans les fibres musculaires. Dans un muscle sain, les noyaux sont en général en périphérie des fibres, tandis que dans les muscles des patients atteints de \gls{mc} et particulièrement dans les \gls{cnm}, les noyaux peuvent être internalisés voire centralisés. Par exemple, dans la figure \ref{fig:he_example}, on observe un nombre important de fibres ayant un noyau cellulaire internalisé. Nous avons dès lors développé une méthode pour compter automatiquement le nombre de fibres présentant un noyau internalisé.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/he_example.jpg}
  \caption[Exemple de biopsie musculaire à la coloration HE]{Exemple de biopsie musculaire de CNM à la coloration HE dans laquelle on observe des fibres avec des noyaux centralisés.}
@@ -22,7 +22,7 @@ Dans un premier temps, nous nous sommes intéressés à l'analyse de la position
 
 \subsection{Algorithme de quantification}
 Pour réaliser cette quantification, la première étape consiste à segmenter, c'est-à-dire à obtenir la position de toutes les fibres musculaires et de tous les noyaux de la coupe. Pour cela nous avons utilisé deux modèles d'\gls{ia} généralistes développés spécifiques pour l'analyse de coupes histologiques: Cellpose et Stardist. Cellpose nous a permis de segmenter les fibres musculaires, tandis que Stardist nous a permis de segmenter les noyaux cellulaires. La figure \ref{fig:he_seg} présente les résultats de la segmentation de la biopsie présentée en figure \ref{fig:he_example}. On observe que globalement toutes les fibres musculaires sont bien segmentées, cependant concernant les noyaux cellulaires, certains sont trop peu colorés pour être reconnus par le modèle. C'est notamment le cas pour quelques noyaux centraux sur la gauche de la biopsie. Ce qui sera problématique lors de l'analyse des noyaux, car ils ne seront pas considérés.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/he_seg.png}
  \caption[Exemple de segmentation de biopsie par Cellpose et Stardist]{Exemple de segmentation des fibres musculaires et des noyaux cellulaires par Cellpose et Stardist}
@@ -34,14 +34,14 @@ Après avoir obtenu la position de chaque fibre et noyau, nous évaluons la posi
 \(\text{Score d'excentricité} = \frac{\text{Dist. centre fibre et noyau}}{\text{Dist. centre fibre et membrane}}\)
 
 Dans cette formule, la notation "Dist. centre fibre et noyau" représente la distance en pixels entre le centroïde de la fibre musculaire et centroïde du noyau considéré. Et la notation "Dist. centre fibre et membrane" représente la distance entre le centroïde de la fibre musculaire et la membrane cellulaire selon une droite passant par le noyau d'intérêt. La figure \ref{fig:he_single_nuc}  présente la classification des noyaux d'une fibre musculaire unique. Quatre noyaux ont été détectés dans cette fibre dont trois ont un score d'excentricité supérieur à 0,9 et un inférieur à 0,1. En fixant un seuil de façon empirique à 0,75, on considère alors que cette fibre musculaire possède un noyau internalisé.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/he_single_nuc.png}
  \caption[Exemple de classification de la position des noyaux]{Exemple de classification de la position des noyaux cellulaires d'une fibre musculaire. \textbf{(A)} La fibre musculaire seule,\textbf{ (B)} masque de segmentation des 4 noyaux pour cette fibre,\textbf{ (C)} schéma de la classification des noyaux avec le score d'excentricité de chaque noyau représentant le ratio de distance: centre de la fibre - noyau versus centre de la fibre - membrane cellulaire.}
  \label{fig:he_single_nuc}
 \end{figure}
 En comparant l'ensemble des noyaux de chaque fibre à un seuil (ici fixé à 0,75), on peut alors quantifier le nombre de fibres musculaires ayant au moins un ou plusieurs noyaux internalisés. Par exemple, pour l'image présentée en figure \ref{fig:he_example}, la figure \ref{fig:he_paint} présente les résultats de cette classification. Sur cette coupe histologique, on obtient un total de 74 fibres (soit 42\% des fibres) avec au moins un noyau internalisé.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/he_paint.png}
  \caption[Exemple de classification de biopsie musculaire à la coloration HE]{Exemple de classification de biopsie musculaire à la coloration HE. Colorées en vert les fibres sans noyau internalisé, et en rouge les fibres avec au moins un noyau internalisé (score d'excentricité inférieur à 0.75)}
@@ -50,7 +50,7 @@ En comparant l'ensemble des noyaux de chaque fibre à un seuil (ici fixé à 0,7
 
 \subsection{Exemple d'application: quantification de la régénération musculaire }
 La présence de noyaux centralisés dans les fibres musculaires est un marqueur pathologique dans les biopsies de \gls{mc}. Cependant, cette centralisation peut aussi être synonyme de régénération musculaire chez les individus sains. Ainsi, la quantification du nombre de noyaux centralisés est donc aussi un moyen de quantifier la régénération musculaire dans une coupe histologique. Dans le cadre d'une collaboration avec l'\gls{igbmc} et plus spécifiquement, avec l'équipe Biologie moléculaire et cellulaire des cancers du sein du Dr. Tomasetto, nous avons utilisé \gls{myoquant} pour évaluer la quantité de régénération musculaire chez des souris traitées avec une drogue induisant le processus régénératif. Ces images d'histologie sont des images à fluorescence (et non à la coloration \gls{he}) avec un fluorochrome pour la membrane cellulaire et un fluorochrome pour les noyaux cellulaires. L'algorithme de \gls{myoquant} est directement compatible avec les images à fluorescence et fonctionne de la même façon que pour les images à coloration\gls{he}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/fluo_nuc.png}
  \caption[Exemple de classification de biopsie musculaire pour la régénération musculaire]{Exemple de classification de biopsie musculaire pour la régénération musculaire. Colorées en vert les fibres sans noyau internalisé (fibres normales), en rouge les fibres avec au moins un noyau internalisé (en régénération)}
@@ -58,7 +58,7 @@ La présence de noyaux centralisés dans les fibres musculaires est un marqueur 
 \end{figure}
 
 La figure \ref{fig:fluo_paint} présente un exemple de coupe complète de biopsie musculaire de souris avec le masque de quantification associé généré par \gls{myoquant}. Sur cette image, il y a 6078 fibres musculaires détectées, dont 2285 (environ 35\%) sont en régénération. Le tableau \ref{tab:myoquant_fluo_time} présente le temps de calcul nécessaire pour chaque étape de la quantification pour la coupe \ref{fig:fluo_paint} et le tableau \ref{tab:myoquant_fluo_results} présente les résultats de cette quantification. On observe que pour traiter une coupe complète sur une machine sans matériel spécifique (sans \gls{gpu}) il a nécessité environ 1 heure de calcul, dont la majorité a été utilisée par le programme Cellpose pour segmenter les fibres musculaires. Cependant, cette vitesse peut être largement améliorée d'un facteur 5 par l'utilisation de matériel spécifique aux calculs \gls{ia} (\gls{gpu}), passant de 3782 secondes pour Cellpose à 652. Ainsi, pour une image contenant 6078 fibres et 23 628 noyaux, cela représente environ 1.6 fibre traitée par seconde. Cette quantification a mis en évidence que 37\% des fibres présentaient un noyau internalisé et donc sont en régénération.
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Temps de calcul pour l'analyse des noyaux d'une coupe complète (6078 fibres, 12000 x 9600 pixels)}
 \label{tab:myoquant_fluo_time}
@@ -77,7 +77,7 @@ Classification des noyaux & 68 & 68 & 89 \\
 \end{tabularx}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Résultats de la quantification des noyaux d'une coupe complète (6078 fibres, 12000 x 9600 pixels)}
 \label{tab:myoquant_fluo_results}
@@ -102,7 +102,7 @@ N° Noyaux non classés (hors fibres) & 1 777 & 8 \\
 \end{table}
 Le tableau \ref{fig:fluo_compil} présente l'ensemble des quantifications opérées dans les différentes conditions de traitement et de génotype (au total 35 \gls{wsi} analysées). On observe qu'après traitement avec la \textit{Cardiotoxin}, une drogue induisant la régénération musculaire, une proportion significativement supérieure de fibres ayant un noyau internalisé par rapport aux coupes contrôle. Ces résultats confirment que \gls{myoquant} est bien capable d'évaluer de façon robuste la présence de noyaux internalisés, un marqueur de la régénération musculaire.
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/fluo_compil.png}
  \caption[Résultat de la quantification de la régénération musculaire]{Résultat de la quantification de la régénération musculaire chez des souris pour 4 génotypes différents traités (bleu) ou non (orange) avec une drogue induisant la régénération musculaire}
@@ -112,7 +112,7 @@ Le tableau \ref{fig:fluo_compil} présente l'ensemble des quantifications opér�
 \section{Ratio de fibre de type 1 et 2: classification basée sur l'intensité de coloration}
 
 Dans un second temps, nous nous sommes intéressés à l'analyse du ratio des différents types de fibres musculaires dans les biopsies. Dans certaines \gls{mc}, l'équilibre entre fibres de type 1 et type 2 peut être modifié avec une prédominance des fibres de type 1. Les différents types de fibres musculaires sont colorés différentiellement (différence d'intensité) à la coloration ATPase. À un pH 4.3, les fibres de type 1 sont sombres et les fibres de type 2 sont pâles, et inversement au pH 9.4. La figure \ref{fig:atp_example} représente une biopsie musculaire colorée à l'ATPase pH 9.4. On observe assez bien la présence des deux populations de fibres à intensité de coloration distincte et nous avons mis à profit ces différences d'intensité pour développer une méthode de comptage automatique du nombre de fibres de chaque type.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/atp_example.png}
  \caption[Exemple de biopsie musculaire à la coloration ATPase pH 9.4]{Exemple de biopsie musculaire à la coloration ATPase pH 9.4 qui permet de différencier les fibres de type 1 aux fibres de type 2.}
@@ -120,7 +120,7 @@ Dans un second temps, nous nous sommes intéressés à l'analyse du ratio des di
 \end{figure}
 \subsection{Algorithme de quantification}
 Pour réaliser cette quantification, la première étape consiste à segmenter, c'est-à-dire obtenir la position de toutes les fibres musculaires. Comme précédemment, nous avons utilisé Cellpose afin de segmenter les fibres musculaires. Ensuite, pour chaque fibre, nous avons extrait l'intensité moyenne de la fibre et avons réalisé un histogramme. La figure \ref{fig:atp_density} présente l'histogramme issu de l'analyse de l'image d'exemple pour la coloration ATPase pH 9.4 (\ref{fig:atp_example}). Le but de la procédure est de déterminer automatiquement les pics présents dans l'histogramme et de trouver les minimums locaux entre les pics pour fixer un ou plusieurs seuils d'intensité. Pour cela, à partir des valeurs de cet histogramme, une courbe de densité est créée (par méthode de \gls{kde}). Puis à partir de cette courbe de densité, une méthode de mélange gaussien est utilisée pour déterminer la position des pics dans la courbe de densité. Finalement, le seuil est déterminé en trouvant le minimum local de la courbe de densité entre les deux pics obtenu par mélange gaussien.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/density_plot.png}
  \caption[Exemple d'histogramme et courbe de densité biopsie ATPase]{Exemple d'histogramme et courbe de densité biopsie ATPase}
@@ -128,7 +128,7 @@ Pour réaliser cette quantification, la première étape consiste à segmenter, 
 \end{figure}
 
 À partir de ce seuil, il est  possible de classer les fibres musculaires en deux catégories: celles avec une intensité moyenne inférieure au seuil et celles avec une intensité moyenne supérieure. La figure \ref{fig:apt_paint} présente les résultats de la quantification automatique des fibres de l'image présentée en exemple précédemment. Sur cette image, on a pu quantifier au total la présence de 496 fibres, dont 269 (54\%) fibres de type 1 et 227 (46\%) fibres de type 2. 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/atp_paint.png}
  \caption[Exemple de classification de biopsie musculaire à la coloration ATPase pH 9.4]{Exemple de classification de biopsie musculaire à la coloration ATPase pH 9.4. Colorer en rouge les fibres ayant une intensité inférieure au seuil (type 2) en vert supérieur au seuil (type 1)}
@@ -137,7 +137,7 @@ Pour réaliser cette quantification, la première étape consiste à segmenter, 
 
 \subsection{Exemple d'application: classification d'une coupe complète avec trois types de fibres}
 La coloration ATPase peut révéler plus de deux types de fibres musculaires. En effet, les fibres de type 2 ont plusieurs sous-types visualisables dans certaines conditions de coloration. Dans cet exemple, nous avons utilisé la méthode de classification développée pour détecter trois types de fibres. L'algorithme présenté dans cette section est capable d'établir autant de seuils automatiquement que spécifiés par l'utilisateur.. La figure \ref{fig:atp_paint_wsi} présente les résultats de classification d'une \gls{wsi} de biopsie musculaire colorée à l'ATP pH 4.6. Sur cette coupe on observe trois populations de fibres: des fibres pâles (fibres de type 2A), des fibres intermédiaires (fibres de type 2B) et de petites fibres très sombres localisées en haut de la coupe (fibres de type 1). La méthode de quantification a alors pu définir deux seuils pour séparer ces trois classes. 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/atp_wsi.png}
  \caption[Exemple de classification de biopsie musculaire colorée à l'ATPase]{Exemple de classification de biopsie musculaire colorée à l'ATPase en 3 classes: en bleu les fibres de type 2A, en rouge les fibres de type 2B et en vert les fibres de type 1.}
@@ -146,7 +146,7 @@ La coloration ATPase peut révéler plus de deux types de fibres musculaires. En
 
 Les résultats de cette classification sont référencés dans le tableau \ref{tab:atp_wsi_resultstable} , le temps de calcul et la vitesse de classification sont disponibles dans le tableau \ref{tab:atp_wsi_timetable}. Au total, 1840 fibres ont été classifiées en 131 secondes (soit 14 fibres par seconde). Il y a une majorité de fibres de type 2A (894, 49\%), de fibres de type de 2B (829, 45\%) et une faible proportion de petites fibres de type 1 (117, 6\%). Les résultats de cette quantification sont visuellement satisfaisants, bien qu'une partie de la biopsie en bas à droite, est repliée sur elle-même et donc apparaît avec une intensité de coloration forte. Cette zone a donc été considérée à tort comme des fibres de type 1. Ces résultats mettent en évidence le besoin de biopsies avec une préparation de qualité pour obtenir des résultats robustes lors de la quantification automatique.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Temps de calcul pour l'analyse des types de fibres d'une coupe complète (1840 fibres, 6000 x 5600 pixels)}
 \label{tab:atp_wsi_timetable}
@@ -162,7 +162,7 @@ Classification des fibres & 18 & 102 \\
 \hline
 \end{tabular}
 \end{table}
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Résultats de quantification des types de fibre d'une coupe complète (1840 fibres, 6000 x 5600 pixels)}
 \label{tab:atp_wsi_resultstable}
@@ -183,7 +183,7 @@ Fibre type 1 & 117 & 6 \\
 \section{Répartition des mitochondries: classification par IA}
 Enfin, nous nous sommes intéressés à l'analyse de la répartition des mitochondries dans les fibres musculaires. Cette répartition peut être anormale dans certaines \gls{mc}. Cette répartition se visualise grâce à la coloration \gls{sdh}, révélant l'activité oxydative des fibres musculaires et donc la position des mitochondries. La figure \ref{fig:sdh_example} présente un exemple de biopsie de muscle d'une souris modèle de myopathie congénitale à la coloration \gls{sdh}. On observe deux types de fibres, des fibres "normales" ayant une répartition homogène en coloration et des fibres "anormales" ayant une agglutination de coloration au centre de la fibre (notamment sur la gauche de la coupe), représentant des agrégats mitochondriaux pathologiques. Dans ce cadre, nous avons développé une méthode capable de détecter et de compter les fibres ayant une répartition mitochondriale anormale, en développant notre propre modèle d'\gls{ia}.
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/sdh_example.jpg}
  \caption[Exemple de biopsie musculaire à la coloration SDH]{Exemple de biopsie de muscle de souris modèle de CNM à la coloration SDH}
@@ -192,7 +192,7 @@ Enfin, nous nous sommes intéressés à l'analyse de la répartition des mitocho
 \subsection{Jeu de données d'image de muscle de souris et annotations}
 Pour constituer le jeu de données nécessaire à l'entraînement de cette \gls{ia} nous avons utilisés 18 \gls{wsi} de biopsies musculaires de souris, dont une souris saine (\textit{wild-type}) et 17 \gls{wsi} de souris modèles de \gls{cnm} (10 \textit{Bin1-KO} et 7 \textit{Dnm2S619L}). Ces 18 \gls{wsi} représentent un total de 16 787 fibres musculaires (tableau \ref{tab:sdh_fiber_count}). Chacune de ces fibres musculaires a été isolée et extraite de la coupe grâce à Cellpose puis a été annotée à la main en 2 catégories: fibre saine ou anormale, par l'expert ayant généré les images (Quentin Giraud et Charlotte Gineste). Au total, les 12 730 fibres saines et 4 057 fibres annotées comme anormales ont été séparées équitablement en trois jeux de données: 72\% pour le jeu d'entraînement de l'\gls{ia}, 8\% pour le jeu de validation lors de l'entraînement, et 20\% pour le jeu de test des performances de l'\gls{ia}. Ce jeu de données à été mis à disposition de la communauté scientifique de façon \textit{open-source} sur la plateforme \textit{Hugging-Face} à l'adresse: \href{https://huggingface.co/datasets/corentinm7/MyoQuant-SDH-Data}{https://huggingface.co/datasets/corentinm7/MyoQuant-SDH-Data}.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Répartition des fibres pour le jeu d'entraînement du modèle SDH}
 \label{tab:sdh_fiber_count}
@@ -213,7 +213,7 @@ Pour constituer le jeu de données nécessaire à l'entraînement de cette \gls{
 
 \subsection{Architecture, entrainement et performance du modèle IA}
 À partir de ce jeu de données, nous avons entrainé un modèle de \gls{cnn}. Nous avons sélectionné l'architecture réseau de neurones profonds \textit{Resnet50} préentrainée sur \textit{ImageNet}. L'architecture \textit{Resnet50} est une architecture à l'état de l'art pour la classification d'images et le préentrainement sur \textit{ImageNet} permet d'obtenir de meilleures performances et une convergence du modèle accélérée. Pour limiter le surapprentissage, nous avons appliqué des techniques d'augmentation de données lors de l'apprentissage par variation de luminosité, contraste, rotation aléatoire, zoom, translation et retournement. De plus, nous avons utilisé une méthode d'arrêt prématuré pour arrêter l'entrainement lorsque les performances sur le jeu de validation ne se sont pas améliorées lors des 10 dernières époques. Enfin, chaque fibre musculaire unique a été redimensionnée à une taille de 256x256 pixels, car le réseau de neurones impose une taille d'image constante.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/training_sdh.png}
  \caption[Courbe d'apprentissage du modèle SDH]{Courbe d'apprentissage du modèle SDH. En haut la courbe d'erreur, en bas la courbe d'exactitude de classification pour le jeu d'entrainement (bleu) et le jeu de validation (orange). La barre verticale rouge indique le modèle final sélectionné par arrêt prématuré.}
@@ -229,13 +229,13 @@ L'ensemble des métriques mesurées lors de l'entrainement sont disponibles de f
 \subsection{Exemple d'application}
 Grâce au modèle développé, il est maintenant possible de classer des fibres individuelles pour détecter les anomalies de répartition mitochondriale. Ainsi pour analyser une image complète, on utilise d'abord Cellpose pour segmenter et isoler chaque fibre musculaire de l'image, puis le modèle que nous avons développé pour prédire la classe de la fibre. Par exemple, pour l'image de biopsie présentée ci-dessus (\ref{fig:sdh_example}), le résultat de classification est présenté en figure \ref{fig:sdh_paint}. Au total, sur 162 fibres détectées, 86 (53\%) sont classées comme ayant une répartition mitochondriale anormale et 76 (46\%) ont une répartition normale. On observe que ce sont bien les fibres ayant une agglutination de coloration au centre de la fibre (agrégats de mitochondries, sur la gauche de la coupe) qui sont classées comme anormales, confirmant le bon fonctionnement du modèle.
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/sdh_paint.png}
  \caption[Exemple de classification de biopsie musculaire de souris à la coloration SDH]{Exemple de classification de biopsie musculaire de souris à la coloration SDH. Colorées en rouge les fibres ayant une répartition mitochondriale anormale, en vert une répartition normale}
  \label{fig:sdh_paint}
 \end{figure}
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/wsi_sdh.png}
  \caption[Exemple de classification de coupe complète biopsie musculaire de souris à la coloration SDH]{Exemple de classification de coupe complète biopsie musculaire de souris à la coloration SDH. Colorées en rouge les fibres ayant répartition mitochondriale anormale, en vert une répartition normale}
@@ -244,7 +244,7 @@ Grâce au modèle développé, il est maintenant possible de classer des fibres 
 
 Il est aussi possible de classer des \gls{wsi} de biopsies de muscle complet colorées au \gls{sdh}. Par exemple, la figure \ref{fig:sdh_wsi_paint} présente les résultats de classification d'une coupe complète comptant 2 869 fibres musculaires. En termes de ressources de calcul, l'étape limitante reste le modèle Cellpose qui, pour cette image, requiert trop de mémoire pour fonctionner sur notre matériel (\gls{gpu}). Ainsi sur CPU, nous avons eu besoin d'environ 40 minutes pour quantifier la coupe, dont la majorité du temps a servi à Cellpose,  ce qui représente une vitesse d'environ 1 fibre par seconde. Au final sur la coupe présentée, 2371 fibres sont classées comme saines (83\%) et 498 sont classées comme anormales (17\%).
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Temps de calcul pour l'analyse des fibres d'une coupe complète SDH (2 869 fibres, 11200 x 6300 pixels)}
 \label{tab:sdh_wsi_timetable}
@@ -260,7 +260,7 @@ Classification des fibres & 70 & 66 & 43 \\
 \hline
 \end{tabularx}
 \end{table}
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering
 \caption{Résultats de quantification des  fibres d'une coupe complète SDH (2 869 fibres, 11200 x 6300 pixels)}
 \label{tab:sdh_wsi_resultstable}
@@ -282,7 +282,7 @@ Une fois le modèle entrainé, nous avons voulu explorer le modèle grâce à di
 \subsubsection{Explicabilité de la classification}
 Afin de vérifier sur quels critères la classification des fibres est réalisée, nous avons utilisé la méthode Grad-Cam (\textit{Gradient-weighted Class Activation Mapping}, \cite{selvaraju_grad-cam_2020}). Cette méthode permet de générer une carte thermique des images pour visualiser les régions importantes pour la classification selon le modèle. Cette carte thermique est réalisée en utilisant les gradients de la sortie par rapport aux cartes de \textit{features} des couches convolutives pour chaque classe, puis une moyenne pondérée est calculée.
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/sdh_gradcam.png}
  \caption[Visualisation par méthode \textit{Grad-Cam} du modèle SDH]{Visualisation par méthode  \textit{Grad-Cam} de la classification de 16 fibres prises au hasard du jeu de test par modèle SDH. Superposition de l'image originale redimensionnée et de la carte thermique générée}
@@ -293,7 +293,7 @@ La figure \ref{fig:gradcam_sdh} présente les résultats de cette méthode de vi
 \subsubsection{\textit{Embedding} des images et réduction de dimensionnalité} 
 Pour rappel la notion d'\textit{embedding} correspond  à la transformation d'une donnée en un vecteur numérique de grande taille. Dans \gls{nlmyo} nous avons utilisé des techniques d'\textit{embedding} sur des données textuelles. Ici, nous avons réalisé un \textit{embedding} de nos images, non pas pour faire de la classification, mais pour appliquer des techniques de réduction de dimensionnalité (comme une PCA) pour visualiser si notre modèle est bien capable de faire une différence nette entre les deux classes.
 Pour cela, nous avons utilisé notre modèle \gls{sdh} et avons retiré la dernière couche de neurones servant à la classification. Ainsi la sortie du modèle correspond à la sortie de la dernière couche convolutive, c'est-à-dire à un vecteur de taille (1, 2048) correspondant aux caractéristiques importantes de l'image extraite par le modèle pour la classification.  En réalisant cette opération pour l'ensemble des images, nous obtenons une matrice (16 787, 2048) sur laquelle nous appliquons une méthode de réduction de dimensionnalité (nommée UMAP (\cite{mcinnes_umap_2020})), donnant ainsi une matrice (16 787, 2) visualisable facilement.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/umap_sdh.png}
  \caption[Visualisation de l'\textit{embedding} du modèle SDH]{Visualisation de l'\textit{embedding} du modèle SDH des 16 787 images de fibres musculaires après réduction de dimensionnalité par UMAP. À gauche, les fibres sont colorées par label, à droite elles sont colorées par modèle de souris}
@@ -306,7 +306,7 @@ Ainsi, la figure \ref{fig:umap_sdh} présente la visualisation obtenue après \t
 Lors de la phase de test, le modèle a obtenu une exactitude de classification de 93.2\%, il existe donc une marge de progression pour le modèle. Les 6.8\% d'erreur peuvent être expliqués par plusieurs raisons. La première est que le modèle n'est peut-être pas assez complexe pour capturer l'ensemble des critères de classification des images et donc a des difficultés pour certains cas complexes. Cependant cette explication a peu de chance d'être fondée car nous utilisons un modèle à l'état de l'art \textit{Resnet50} avec plus de 25 millions de paramètres, ce qui devrait être largement suffisant pour cette tache de classification. Un seconde raison pourrait être la présence de bruit ou d'erreurs dans le jeu de données de base. Nous avons alors exploré comment nous pouvions, grâce au modèle entrainé, le jeu de données initial pour potentiellement trouver des erreurs d'annotation.
 
 La figure \ref{fig:identify_errors} résume la démarche utilisée pour identifier des erreurs dans le jeu de données. À partir de la prédiction de la classe des 16 787 images, nous avons filtré pour ne garder que les images où le label (annotation par l'expert) était discordant avec la prédiction du modèle ET où le modèle avait un fort niveau de confiance dans la prédiction (>85\%). Au total cela représente 228 images, soit 1.66\% du jeu de donnée de base.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/identify_errors.png}
  \caption[Méthode d'identification des potentielles erreurs d'annotation]{Méthode d'identification des erreurs d'annotation potentielles }
@@ -316,7 +316,7 @@ La figure \ref{fig:identify_errors} résume la démarche utilisée pour identifi
 La figure \ref{fig:list_errors} présente huit exemples pris au hasard parmi les 228 images ayant une prédiction discordante avec l'annotation et un haut niveau de confiance du modèle. On observe par exemple pour la première et la dernière image, qu'elles ont été annotées par l'expert comme saines et prédites comme anormales par le modèle. En regardant l'image de la fibre, on observe une tache centrale caractéristique de fibres ayant une répartition mitochondriale anormale. Ceci laisse donc penser qu'il y a eu une erreur d'annotation pour ces deux fibres, considérée à tort comme saine. De même, pour la seconde image, annotées comme anormale, mais prédite comme saine, on observe la présence d'un marquage homogène sans agglutination caractéristique du marquage au centre, il n'y a donc visiblement pas de raison pour la classer comme anormale.
 
 Ces résultats montrent que le modèle est capable après entrainement d'identifier des erreurs humaines lors de l'évaluation des fibres. Ces erreurs d'annotation peuvent être dues à des inattentions ou des erreurs de clic lors du travail manuel et répétitif d'annotation des  16 787 images par les experts. La détection de potentielles erreurs par le modèle et leur réannotation pourrait permettre d'améliorer le jeu de données utilisé pour l'entrainement du modèle et ainsi obtenir de meilleures performances de classification.
-\begin{figure}[htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/list_sdh_errors.png}
  \caption[Exemple de fibres ayant un label prédit contraire a l'annotation avec un haut niveau de confiance du modèle]{Exemple de fibres ayant un label prédit contraire à l'annotation avec un haut niveau de confiance du modèle}

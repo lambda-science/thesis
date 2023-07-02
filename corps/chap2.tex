@@ -18,7 +18,7 @@ Le perceptron, réseau de neurones composé d'une seule couche d’un ou plusieu
 
 
 Similairement au cerveau, ces neurones formels (artificiel) sont présents en grand nombre dans les réseaux de neurones profonds et sont interconnectés selon une organisation précise, cette organisation se nomme l'architecture du réseau.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/neuronne.png}
  \caption[Comparaison du neurone biologique et du neurone formel]{Comparaison du neurone biologique et neurone formel. (A) Représentation schématique du neurone biologique. (B) Représentation schématique du neurone formel utilisé en \gls{ia}}
@@ -27,7 +27,7 @@ Similairement au cerveau, ces neurones formels (artificiel) sont présents en gr
 \subsection{Les réseaux de neurones: une diversité d'architectures}
 La multiplication du nombre des neurones dans un réseau de neurones et de leur interconnexion permet de constituer des architectures spécifiques qui confèrent des compétences particulières au réseau de neurones comme l'intégration d'informations locales (pour l'imagerie par exemple grâce à la convolution, \cite{fukushima_neocognitron_1980}), l'intégration d'information globale (pour l'analyse de séquence par exemple grâce aux \textit{transformers}, \cite{vaswani_attention_2017}), des mécanismes de "mémoires" (pour l'analyse de texte par exemple grâce à la \textit{Long short-term memory}, LSTM, \cite{hochreiter_long_1997}) ou encore des capacités génératives (pour la génération d'images par exemple grâce aux GAN et aux modèles de diffusion). La figure \ref{fig:dnn_archi} (\cite{leijnen_neural_2016}) présente graphiquement quelques architectures de réseaux de neurones communes. On y retrouve le perceptron (P), le perceptron multicouche (DFF), le réseau LSTM, le \gls{dnn} convolutif (DCN) et les réseaux antagonistes génératifs (GAN).
 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.9\textwidth]{figures/dnn_archi.png}
  \caption[Représentation de différentes architectures de \gls{dnn}]{Représentation de différentes architectures de \gls{dnn} (modifié de \cite{leijnen_neural_2016})}
@@ -46,7 +46,7 @@ Dans tous les cas, plus cette valeur est élevée, plus les prédictions du mod�
 
 
 La figure\ref{fig:loss_func} présente un exemple théorique de valeur de fonction de coût au cours de l'entrainement d'un modèle \gls{dnn}. Dans cet exemple l'écart tout au long de l'apprentissage entre le jeu de validation et d'entrainement est important à des fins de visualisation, en pratique les deux courbes doivent presque se superposer. On observe ici qu'au cours de l'entrainement cette valeur converge vers 0. Cependant au bout d'un moment la valeur pour le jeu d'évaluation remonte tandis que celle du jeu d'entrainement continue de baisser, il s'agit du phénomène de surapprentissage, le modèle cesse d'apprendre à généraliser et apprend simplement par cœur le jeu d'entrainement. Ainsi il est nécessaire d'arrêter l'apprentissage au moment où la valeur du jeu de validation augmente, il s'agit de ce qu'on appelle l'arrêt prématuré pour éviter le surapprentissage.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/loss_function.png}
  \caption[Schéma d'un exemple de fonction de côut lors d'un entrainnement]{Schéma d'un exemple de fonction de côut lors de l'entrainnement d'un \gls{dnn}}
@@ -54,7 +54,7 @@ La figure\ref{fig:loss_func} présente un exemple théorique de valeur de foncti
 \end{figure}
 \subsubsection{Rétropropagation et descente de gradient}
 La figure \ref{fig:retropop} (\cite{scalzitti_nouvelle_2021}) présente le mécanisme de rétropropagation. Lors d'une prédiction, les signaux sont propagés vers l'avant (nommé \textit{forward pass}) à partir de la couche d'entrée jusqu'à la couche de sortie, puis l'erreur est ensuite calculée grâce à la fonction de coût. Lors de l'entrainement, le chemin inverse est réalisé en propageant le gradient de l'erreur pour identifier les neurones responsables des erreurs (\textit{backward pass}) (\cite{lecun_deep_2015}). Ce processus de rétropropagation permet d'identifier quels sont les neurones responsables des erreurs dont les paramètres doivent être modifiés pour réduire la fonction de coût.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/retro_propagation.png}
  \caption[Schéma de la rétro-propagation]{Schéma de la propagation du signal lors de la prédiction et de la rétropropagation lors de l'entrainement (\cite{scalzitti_nouvelle_2021})}
@@ -63,7 +63,7 @@ La figure \ref{fig:retropop} (\cite{scalzitti_nouvelle_2021}) présente le méca
 
 
 Après avoir identifié les neurones à modifier (et donc avoir calculé le gradient de chaque neurone), leurs poids vont être ajustés grâce à la méthode de la descente de gradient. La figure \ref{fig:grad_descent} présente le fonctionnement de la descente de gradient. À chaque étape d'apprentissage, les poids des neurones (ici un seul poids pour un neurone sur la figure) sont mis à jour dans la direction négative du gradient, ce qui a pour effet de réduire la valeur de la fonction de coût. Cette modification des poids  est proportionnelle à un paramètre nommé le pas d'apprentissage (\textit{learning rate}). Ces cycles d'apprentissage vont se répéter jusqu'à atteindre un minimum (global ou local) dans la fonction de coût, indiquant un poids optimal pour la fonction de coût (et donc la tache à réaliser).
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/gradient_descent.png}
  \caption[Schéma de la descente de gradient pour un poids d'un neuronne]{Schéma de la descente de gradient pour un poids d'un neurone}
@@ -76,7 +76,7 @@ La rétropropagation et la descente de gradient permettent l'apprentissage de r�
 \subsection{Nombre de paramètres et ressources informatiques}
 Il existe un lien de proportionnalité entre la taille (en nombre de neurones) d'un \gls{dnn}, sa précision et les ressources de calculs nécessaires à son entrainement et inférence. En théorie plus un réseau est grand, plus sa capacité à capturer des relations complexes entre les données est importante et donc il peut atteindre une meilleure précision. Le tableau \ref{table:dnn-size} (\cite{chollet_keras_2023}) présente plusieurs architectures utilisées pour la classification d'image. On observe que pour une même architecture, augmenter le nombre de paramètres permet d'obtenir de meilleures performances, mais au coût d'un temps d'inférence plus long. Cependant, lors d'une comparaison de deux architectures différentes, la relation performance - nombre de paramètre n'est pas forcément vérifiée. Les réseaux EfficientNet performent mieux que les réseaux ResNet avec un nombre de paramètres moindre, cependant une règle qui reste vérifiée dans toutes les conditions: les réseaux qui performent le mieux ont un temps d'inférence plus long, quelle que soit leur architecture.
 
-\begin{table}[!htbp]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{|l|c|c|c|} 
  \hline
@@ -110,7 +110,7 @@ L'architecture des réseaux de neurones convolutifs (CNN) permet l'analyse et l'
  
 \subsection{Fonctionnement des couches convolutives pour l'analyse d'images}
 Pour simuler le comportement des neurones du cortex visuel, les neurones d'une couche convolutive ne sont connectés qu'à une zone restreinte d'une image, généralement sous forme d'un carré de pixels. La figure \ref{fig:conv_simple} présente schématiquement la liaison de trois neurones répartis sur deux couches convolutives par rapport à une image de base. On observe que ces neurones n'ont accès qu'à une portion de l'image, donc à une information locale. 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/conv_simple.png}
  \caption[Schéma de la connection des neurones convultifs à une image]{Schéma de la connexion des neurones convolutifs à une image. Les neurones ne sont connectés qu'à une portion locale de l'image sous la forme d'un carré de pixels.}
@@ -122,7 +122,7 @@ La convolution consiste à appliquer un filtre à une entrée pour produire une 
 
 
 La figure \ref{fig:conv_simple} est simpliste, car elle représente les couches convolutives comme composées d'une seule couche de neurones et donc un seul filtre. En réalité, comme présentée en figure \ref{fig:conv_complex} chaque couche convolutive est composée de plusieurs filtres (couches de neurones formant des cartes de caractéristique). Chacune de ces \textit{features map} est reliée aux précédentes afin d'extraire des caractéristiques très diverses (des formes horizontales, verticales, de la texture, du contraste...).
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/conv_complex.png}
  \caption[Schéma des couches convolutives]{Schéma des couches convolutives complexes.}
@@ -131,7 +131,7 @@ La figure \ref{fig:conv_simple} est simpliste, car elle représente les couches 
 
 
 Enfin pour simplifier les couts de calcul et réduire la mémoire nécessaire, après un bloc de convolution, une étape de \textit{max-pooling }(en français: sous-échantillonnage maximal) est réalisée. Cette technique permet de réduire la dimensionnalité des cartes de caractéristique en préservant les informations essentielles. La figure \ref{fig:max-pool} présente le fonctionnement de cette méthode. La carte de caractéristique est divisée en carré non chevauchant et la valeur maximale de chaque carré est sélectionnée. Par exemple si on a une carte de caractéristique de taille 4x4 et qu'on réalise un \textit{max pooling} de taille 2, on obtient une carte de caractéristique de taille 2x2, c'est-à-dire quatre fois plus petite.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.5\textwidth]{figures/max-pool.png}
  \caption[Technique de max-pooling]{Schéma de la technique de max-pooling pour réduire la dimensionnalité d'une matrice.}
@@ -140,7 +140,7 @@ Enfin pour simplifier les couts de calcul et réduire la mémoire nécessaire, a
 
 
 Pour finir, la figure \ref{fig:cnn_archi} présente la structure typique d'un \gls{cnn}. Un \gls{cnn} consiste en l'enchainement de couches de convolution et de \textit{max-pooling} avant les couches de classification (\textit{fully connected}). Le but de cette architecture est de réduire la dimensionnalité de l'image tout en augmentant la profondeur (c'est-à-dire le nombre d'informations extraites par position). Par exemple pour une image de 512x512 (c'est-à-dire 262 144 pixels), si en sortie de couches convolutives on obtient une matrice de taille (4x4x128, soit 2048 points), cela signifie que nous avons extrait 128 caractéristiques pour chacune des 16 zones de l'image. Et ce sont ces 128 caractéristiques par zone qui vont être utilisées pour classer l'image.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/cnn_simple.png}
  \caption[Schéma de la structure d'un \gls{cnn} typique]{Schéma de la structure d'un \gls{cnn} typique}
@@ -154,7 +154,7 @@ La segmentation d'une image consiste à diviser l'image en groupes de pixels (se
 
 
 Cellpose (\cite{stringer_cellpose_2021}), développé par Carsen Stringer en 2021, est un modèle de segmentation généraliste, conçu pour être capable de segmenter les cellules de n'importe quelle coupe histologique. La figure \ref{fig:cellpose_archi} présente l'architecture du modèle ainsi qu'un exemple d'image histologique et de résultat de segmentation. L'architecture de\gls{cnn} utilisée se nomme U-Net (\cite{ronneberger_u-net_2015}) structurée comme un U avec un chemin de contraction (encodeur, grâce à la convolution) et un chemin d'expansion (décodeur grâce à la "\textit{upconvolution}"). Cette architecture permet à partir de l'image d'entrée, composée de cellules en microscopie à fluorescence, de générer un masque de segmentation, de la même taille que l'image d'entrée. Ce masque de segmentation est abstraction de l'image d'entrée où les pixels de chaque objet (cellules) sont marqués avec un identifiant unique. Ainsi il est possible à partir de ce masque de compter ou de mesurer la taille des cellules.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/cellpose_archi.png}
  \caption[Architecture du réseau convolutionel de CellPose]{Architecture du réseau convolutif de CellPose (modifié de \cite{stringer_cellpose_2021})}
@@ -162,7 +162,7 @@ Cellpose (\cite{stringer_cellpose_2021}), développé par Carsen Stringer en 202
 \end{figure}
 \subsubsection{Analyse de séquences: prédiction de sites d'épissage avec Spliceator}
 En plus du traitement d'images, les \gls{cnn} peuvent être utilisés pour traiter des données de type séquences nucléotidiques. Au sein de notre équipe, en 2021, l'outil Spliceator a été développé (\cite{scalzitti_spliceator_2021}) pour analyser des séquences génomiques et prédire les sites d'épissages. La figure \ref{fig:splice_archi} présente la structure du \gls{cnn} entrainé pour cette tache de classification. Le \gls{cnn} entrainé est capable de prédire les sites d'épissage de plus de 100 espèces vivantes avec une précision de plus de 90\%. L'architecture utilisée par Spliceator est une architecture classique de \gls{cnn} avec trois blocs convolutifs puis une couche \textit{fully-connected} pour la classification, identique à l'exemple en figure \ref{fig:cnn_archi}. Cette architecture a permis d'entrainer un modèle capable de prendre en contexte un contexte jusqu'à 600 nucléotides en amonts et en aval du site d'épissage à évaluer.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/spliceator_nn.png}
  \caption[Architecture du réseau convolutionel de Spliceator]{Architecture du réseau convolutif de Spliceator (\cite{scalzitti_spliceator_2021})}
@@ -187,7 +187,7 @@ Par exemple, imaginons que l'on veuille construire un réseau de traduction fran
 
 
 Cependant, cette structure possède des limites. En effet, pour des phrases très longues ou des paragraphes, l'encodeur n'est pas nécessairement en mesure de représenter toutes les informations pertinentes dans l'état caché qui possède une taille fixe, ainsi de l'information pourrait être perdue. Les mécanismes d'attention à l'œuvre dans les \textit{transformers} permettent de pallier à cette limite.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/encoder_decoder.png}
  \caption[Schéma de la structure encodeur-décodeur]{Schéma de la structure encodeur-décodeur permettant l'encodage d'une donnée dans un état caché puis son décodage pour la traduction par exemple. }
@@ -200,7 +200,7 @@ Dans un \textit{transformers} les encodeurs et les décodeurs sont multiples (au
 Ces mécanismes d'attention sont divisés en plusieurs têtes, qui permettent lors de l'entrainement de spécialiser chacune des têtes d'attention sur un aspect spécifique de l'entrée. Par exemple, dans le cadre d'un texte, une tête peut être spécialisée dans la syntaxe et une autre dans des aspects sémantiques. 
 La multiplicité des transformers et les mécanismes d'attention multi-têtes permettent aux réseaux de traiter des données de grandes tailles sans perte d'information, c'est-à-dire avec une grande "mémoire". Ainsi cela permet de détecter et d'intégrer lors des prédictions réalisées des informations à longue distance, là où la convolution ne permettait d'intégrer que des informations locales.
 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/encoder_attention.png}
  \caption[Schéma de la structure encodeur-décodeur d'un réseau transformer]{Schéma de la structure encodeur-décodeur d'un réseau transformer. Chaque encodeur et transformer est composé d'un mécanisme d'attention et d'un réseau à propagation directe.}
@@ -208,7 +208,7 @@ La multiplicité des transformers et les mécanismes d'attention multi-têtes pe
 \end{figure}
 
 Grâce à cette structure encodeur-décodeur et les mécanismes d'attention multi-tête, il est possible de créer une architecture de \textit{transformer} présentée en figure \ref{fig:transformer}. Cette architecture est composée de deux éléments: à gauche en vert les décodeurs empilés au nombre de 6, qui prennent en entrée la phrase à traduire. À droite en rouge, les décodeurs empilés au nombre de six prennent à la fois la sortie des encodeurs en compte ainsi que la traduction dont la génération a déjà commencé. Dans chaque décodeur et encodeur, on retrouve nos modules d'attentions (en violet). L'inférence de cette architecture est une boucle, les mots sont générés un par un à chaque cycle. Ainsi pour la traduction en anglais de la phrase "Je suis un étudiant" au premier cycle le mot "I" sera généré. Ensuite, ce mot va être repris en entrée des décodeurs pour générer le suivant.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/transformer.png}
  \caption[Schéma de l'architecture d'un réseau Transformer]{Schéma de l'architecture d'un réseau transformer. Les transformer sont composés de 6 encodeurs empilés, reliés à 6 décodeurs empilés, chacun composé de mécanismes d'attention.}
@@ -219,7 +219,7 @@ Ici pour expliquer le fonctionnement des \textit{transformers} nous avons utilis
 
 \subsubsection{Enformer: un transformer pour l'expression des gènes}
 Comme écrit précédemment, l'expression des gènes dans le génome est modulée par des interactions longue distance, grâce notamment aux \textit{enhancer}. Ainsi si l’on veut construire des modèles prédictifs de l'expression des gènes il faut avoir une architecture capable de considérer ces interactions longue distance, c'est précisément l'intérêt des \textit{transformers}. Dans les travaux intitulés "\textit{Effective gene expression prediction from sequence by integrating long-range interactions}" (\cite{avsec_effective_2021}) publié en 2021, une équipe de DeepMind a utilisé un modèle mixant convolutions et transformers pour prédire l'expression des gènes (figure \ref{fig:enformer}. Là où le précédent modèle n'était capable de prendre que 20 000 paires de bases de contexte autour d'un gène pour effectuer sa prédiction, ce nouveau modèle nommé \textit{Enformer} est capable d'étendre le contexte jusqu'à 100 000 paires de bases en amont et en aval du gène. Grâce à l'examen des prédictions réalisées, ils ont réussi à mettre en évidence que le modèle a porté son attention sur la présence d'\textit{enhancer} localisés à 50 000 paires de bases du gène. Ce qui confirme l'intérêt de l'utilisation de transformer dans le cadre de l'analyse de l'expression des gènes et de la prise en compte des \textit{enhancer}.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/enformer.png}
  \caption[Schéma de l'architecture du modèle enformer]{Schéma de l'architecture du modèle enformer. Ce modèle basé sur les \textit{transformers} permet de prendre jusqu'à 100 000 paires de bases de contexte génomique pour évaluer l'expression d'un gène (\cite{avsec_effective_2021}).}
@@ -227,7 +227,7 @@ Comme écrit précédemment, l'expression des gènes dans le génome est modulé
 \end{figure}
 \subsubsection{AlphaFold : un transformer pour la conformation 3D des protéines}
 En 2020, le modèle AlphaFold 2 (\cite{jumper_highly_2021}) a remporté la CASP14 (\href{https://predictioncenter.org/casp14/}{https://predictioncenter.org/casp14/}), compétition de référence dans le domaine de la prédiction de structure protéique. Leur modèle a obtenu un score global de 244 (somme de z-scores), contre 90,8 pour le second meilleur modèle (\cite{jumper_applying_2021}). Une des caractéristiques principales du modèle AlphaFold est l'usage d'une architecture similaire aux \textit{transformers} (figure \ref{fig:alphafold}). Ces blocs nommés "\textit{evoformer}" utilisent les mêmes mécanismes d'attention à l'œuvre dans la structure classique des \textit{transformers}. Comme dans le contexte génomique, les interactions 3D qui ont lieu dans les séquences protéiques ne sont pas que locales, ainsi il est nécessaire de pouvoir prendre en compte des interactions longue distance pour obtenir une prédiction de qualité, grâce à ces mécanismes d'attention. L'utilisation de cette architecture a permis le développement d'un outil qui révolutionne le domaine de la biologie structurale rendant possible l'accès à la structure 3D prédite de n'importe quelle protéine du vivant.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/alphafold.png}
  \caption[Schéma de l'architecture du modèle AlphaFold]{Schéma de l'architecture du modèle AlphaFold. Ce modèle utilise les mécanismes d'attention des transformers pour prédire la conformation 3D de protéines à partir de leurs séquences et alignements.}
@@ -245,7 +245,7 @@ Les années 2022-2023 représentent des années clés dans l’histoire du \gls{
 
 
 Pour ne citer que quelques exemples des capacités des \gls{llms}, ces modèles sont capable de résumer des articles scientifiques en une série de points clés, de générer du code informatique et d'en corriger les erreurs, d'extraire des informations spécifiques d'un texte, de répondre à des questions de logique, d'expliquer des blagues, d'écrire des histoires créatives, d'analyser des images et d'interagir avec le monde extérieur par des requêtes internet. Ces modèles ont donc des capacités extrêmement vastes avec des performances proches de l'Homme. Les modèles \gls{llms} sont très divers et en constante évolution. La figure \ref{fig:llm-tree} (\cite{yang_harnessing_2023}) retrace les principaux modèles développés entre 2018 et 2023 où l'on observe une nette évolution entre 2022 et 2023 avec une multitude de modèles ouverts ou fermés développés. 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/llm_tree.png}
  \caption[Arbre du développement LLMs de 2018 à 2023 (\cite{yang_harnessing_2023})]{Arbre du développement LLMs de 2018 à 2023 (\cite{yang_harnessing_2023})}
@@ -278,14 +278,14 @@ Après le préentrainement par \gls{ssl} et l'entrainement classique du modèle 
 
 \subsection{Les modèles génératifs et modèles d'embedding}
 Les \gls{llms} se déclinent sous deux formes principales avec des utilisations différentes: les modèles génératifs et les modèles d'\textit{embedding}. La figure \ref{fig:llm-type} présente les deux types de modèles.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/two_llm.png}
  \caption[Schéma des deux types de LLMs]{Schéma des deux types de LLMs}
  \label{fig:llm-type}
 \end{figure}
 Les modèles de type \textit{embedding} consistent à transformer notre texte d'entrée en vecteur numérique de grande taille. L'idée derrière cette transformation est que deux phrases ayant un sens similaire (sens sémantique) ont une représentation numérique similaire. Transformer le texte en vecteur numérique permet de réaliser des opérations, telles que de la recherche de similarité entre deux phrases, mais aussi du clustering, de la visualisation graphique ou encore l'entrainement de modèles de classification. Le concept d'\textit{embedding} est donc un réel couteau suisse pour l'analyse et la rechercher de similarité entre du texte et il est en général multilingue: deux phrases identiques, mais dans une langue différente vont avoir une représentation numérique similaire. La figure \ref{fig:sentence_embed}  (\cite{luis_serrano_what_2023}) présente une visualisation de l'embedding de 9 phrases en deux dimensions. On observe sur cette figure que les phrases traitant d'un sujet similaire sont regroupées en sous-groupe dans l'espace. On observe un groupe qui concerne les chiens, un groupe concernant le football et un groupe concernant une question de type "comment vas-tu". Cet exemple est simplifié à des fins de représentation, car les phrases ne sont encodées qu'en deux dimensions. En réalité pour capturer des nuances complexes dans les phrases, les modèles d'\textit{embedding} encodent les phrases en plusieurs centaines voir des milliers de dimensions.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/sentence_embed.png}
  \caption[Visualisation d'embedding de 9 phrases en 2 dimensions]{Visualisation d'embedding de 9 phrases en 2 dimensions (\cite{luis_serrano_what_2023})}
@@ -295,7 +295,7 @@ Les modèles de type \textit{embedding} consistent à transformer notre texte d'
 
 Les modèles génératifs sont des modèles de complétions. À partir d'un texte en entrée, ils génèrent un texte de sortie. Ces modèles sont utiles pour des tâches créatives comme la génération d'histoire ou de code, mais aussi pour suivre des instructions précises telle l'extraction d'information d'un texte comme la récapitulation d'un article scientifique. Le texte en entrée contenant les instructions pour le modèle est nommé prompt (figure \ref{fig:llm-prompt}). Le défi dans l'utilisation des modèles génératifs réside dans la création d'un prompt adapté aux résultats que l'on souhaite obtenir. Le processus de création et d'affinage d'un prompt pour une tâche se nomme "\textit{prompt engineeing}". Classiquement, un prompt possède une structure de base en quatre éléments: (i) la description précise de la tâche (ii) un exemple de réalisation de la tâche et de sortie attendue (iii) le texte que l'on souhaite analyser(iv) un indicateur de sortie indiquant au modèle qu'on attend une réponse. L'avantage des modèles génératifs réside dans le fait qu'aucun apprentissage supplémentaire n'est nécessaire, le point central étant l'établissement d'un prompt optimal.
 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/promt_llm.png}
  \caption[Schéma du concept de prompt pour les LLMs génératifs]{Schéma du concept de prompt pour les LLMs génératifs}

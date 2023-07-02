@@ -29,7 +29,7 @@ Le développement des techniques d'imagerie a permis une diversification des tec
 
 \subsubsection{Données génétiques et omiques}
 Enfin, les progrès en termes de technologies de séquençage grâce notamment aux technologies de seconde génération à lectures courtes (technologie Illumina) et aux technologies de troisième génération à lectures longues (technologie PacBio et Nanopore) ont permis l'accès à l'ensemble des informations génétiques et omiques de l'Homme. De plus, la baisse des couts de séquençage rend possible l'utilisation de séquençage de génome complet pour le diagnostic de maladies génétiques chez les patients (\cite{rabbani_next-generation_2012}). Plus récemment, les techniques dites "omiques" (figure \ref{fig:intro-omics}, \cite{momeni_survey_2020}) sont utilisées pour mieux comprendre les pathologiques telles que les technologies de transcriptomiques (expression ARN des gènes), épigénétiques, protéomiques (expression protéique des gènes) et métabolomiques (étude des métabolites). Ces technologies permettent d'obtenir une vue globale de mécanismes biologiques qui opèrent au sein d'un tissu. 
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/intro_omics.png}
  \caption[Méthodes de séquençages "omiques"]{Schéma des différentes méthodes de séquençages "omiques" donnant accès à une vue globale des mécanismes biologiques dans les tissus biologiques. (Modifié de \cite{momeni_survey_2020})}
@@ -49,7 +49,7 @@ Le \textit{machine-learning} est une branche de l'\gls{ia} qui regroupe un ensem
 
 \subsection{Les formats et partitionnements des données}
 Les données sont le point fondamental et critique des techniques de \gls{ml}. Les données représentent l'ensemble des informations brutes utilisées par notre algorithme de \gls{ml} pour réaliser son apprentissage et réaliser des prédictions. Pour être utilisables par les algorithmes de \gls{ml} les données doivent être structurées. Le tableau \ref{table:dataset_intro} présente un exemple de structure d'un jeu de données exploitable pour un algorithme de \gls{ml}. Les données sont sous la forme de tableau où chaque ligne représente une observation (un point de données, par exemple un patient) et chaque colonne représente un descripteur (nommé \textit{feature} en anglais, par exemple le rythme cardiaque, la présence d'une toux chez le patient, la présence d'antécédents de diabète...). Enfin, la dernière colonne représente le label, c'est en général ce que l'on souhaite prédire dans le cadre de l'entrainement de notre modèle.
-\begin{table}[!htbp]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|} 
  \hline
@@ -91,7 +91,7 @@ Les taches de clustering et de réduction de dimensionnalités sont possibles gr
 Enfin, l'apprentissage par renforcement est moins connu et représente une méthode d'apprentissage où un agent (modèle) apprend à se comporter dans un environnement donné, recevant des pénalités et des récompenses en fonction de ses actions. Typiquement,  un modèle apprenant à jouer à un jeu d'échecs représente une tâche d'apprentissage par renforcement. Dans un cadre biomédical, un système d'apprentissage par renforcement peut être utile par exemple pour un système d'examen médical intelligent qui va proposer des symptômes à vérifier chez le patient en fonction des observations déjà enregistrées. Ainsi, on a un environnement (les observations réalisées chez le patient) et des actions à réaliser par le modèle de \gls{ml} (proposer des symptômes ou examens à vérifier). Les algorithmes utilisés pour ce type d'apprentissage peuvent être des réseaux de neurones, les méthodes de \textit{Q-learning} ou encore les systèmes de classeurs.
 
 La figure \ref{fig:ml-landscape} représente schématiquement la classification des tâches, des modes d'apprentissages et des différents cas d'applications et algorithmes associés.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/ml_landscape.png}
  \caption[Schéma des méthodes de machine-learning]{Schéma de la classification des tâches, des modes d'apprentissage et des différents cas d'applications et algorithmes associés en \textit{machine-learning}}
@@ -111,7 +111,7 @@ Appliqué au \textit{machine-learning}, C représente alors les points de donné
 Les récentes recherches en \gls{ia} ont amené à l'émergence du domaine d'\gls{xai}. L'\gls{xai} cherche à concevoir des méthodes pour rendre les modèles d'\gls{ia} et de \gls{ml} plus transparents et explicables, ce qui est critique dans le cadre de l'application de ces modèles dans des domaines à haut risque, comme le domaine médical (\cite{arrieta_explainable_2019}). C'est-à-dire concevoir des méthodes de \gls{ml} dont on est capable de comprendre et d'évaluer les prédictions de manière intelligible.
 
 La figure (\ref{fig:xai-research}) présente le concept de compromis entre performances des algorithmes et leur niveau d'explicabilité. De manière générale, plus un algorithme est performant d'un point de vue prédictif, moins il est explicable. Le domaine de l'\gls{xai} cherche donc a soit: (i) améliorer l'explicabilité des algorithmes performants et peu explicables ou (ii) améliorer les performances des modèles les plus explicables.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/xai-research.png}
  \caption[Compromis entre interprétabilité et performances des algo de ML]{Compromis entre interprétabilité du modèle et performance d'algorithmes de ML. Représentation de la zone d'amélioration où réside le potentiel des techniques et outils de l'IA explicable (xAI) (Source: \cite{arrieta_explainable_2019})}
@@ -125,7 +125,7 @@ Les méthodes bayésiennes naïves reposent sur le théorème de Bayes sur les p
 
 \subsubsection{Méthodes à base d'arbres}
 Les arbres de décisions sont des modèles classiques en \gls{ml}. Cette méthode cherche à produire un arbre (un graphe dirigé acyclique) où chaque nœud s'apparente à une série de questions posée sur les descripteurs des données. En fonction de la valeur de ces descripteurs, l'arbre progresse vers un sous-nœud jusqu'à la prédiction, le nœud feuille final. Cette méthode est intrinsèquement explicable, car il est facile de dessiner l'arbre et de retracer le processus de prédiction pour un point de données en suivant les nœuds comme une série de règles logiques. Par exemple, la figure \ref{fig:decision-tree} présente un exemple d'arbre de décisions très simple avec trois nœuds (3 questions pour 3 descripteurs) et deux classes possibles comme prédiction (nœud feuille final rond).
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.6\textwidth]{figures/decision_tree.png}
  \caption[Exemple d'arbre de décision]{Exemple d'arbre de décision à 3 questions (3 nœuds pour 3 descripteurs) et 2 classes.}
@@ -133,7 +133,7 @@ Les arbres de décisions sont des modèles classiques en \gls{ml}. Cette méthod
 \end{figure}
 
 Une évolution des arbres de décisions pour les rendre plus complexes et performants est nommée la méthode de la forêt aléatoire qui est une méthode ensembliste des arbres de décision. La figure \ref{fig:random-forest} présente le fonctionnement de la forêt aléatoire. Cela consiste à construire plusieurs arbres de décisions sur des sous-ensembles de nos données, puis de combiner les prédictions de ces arbres. Chaque arbre de décisions ainsi généré va établir une prédiction et la prédiction finale correspondra à la majorité des votes de chaque arbre. Les méthodes de \textit{boosting}  (XGBoost, LGBoost, CatBoost) sont similaires aux forêts aléatoires à la différence que chaque arbre n'est pas construit indépendamment, mais il cherche à corriger les erreurs du précédent, de manière séquentielle.
-\begin{figure}[!htbp]
+\begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/random_forest.png}
  \caption[Fonctionnement de l'algorithme de forêt aléatoire]{Fonctionnement de l'algorithme de forêt aléatoire}
@@ -143,7 +143,7 @@ Les forêts aléatoires sont très utilisées en \gls{ml} et spécifique en biol
 
 \subsubsection{Systèmes de classeurs (LCS)}
 Les \gls{lcs} sont des algorithmes de \gls{ml} les plus transparents et explicables (figure \ref{fig:xai-research}, \cite{arrieta_explainable_2019}). Ces systèmes fonctionnent sur le principe d'un ensemble de règles (nommées "classeurs"), qui associent des conditions à une action (prédiction). La table \ref{table:lcs-rules} présente un exemple de trois règles fictives issues de l'entrainement d'un \gls{lcs}. Une règle (ou un classeur) se présente sous la forme "SI [condition] ALORS [prédiction]". Chaque règle est associée à un poids, ce qui permet de définir une importance plus ou moins forte. Leur fonctionnement est donc similaire aux arbres de décisions, mais sans sens imposés entre les séries de questions.
-\begin{table}[!htbp]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{|l|l|c|} 
  \hline
