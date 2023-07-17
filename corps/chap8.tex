@@ -2,12 +2,12 @@
 \section{Contexte}
 Les outils présentés précédemment ont pour vocation de traiter et d'explorer les comptes-rendus de biopsies textuels, permettant ainsi une approche rétrospective de l'ensemble des patients connus à ce jour. Cependant, il est intéressant d'explorer aussi comment l'analyse d'images par \gls{ia} peut permettre de générer automatiquement des comptes-rendus de biopsies. Cette approche permettrait un grain de précision et de temps dans l'évaluation des biopsies. Tout d'abord un gain de temps, car une approche par \gls{ia} permettrait de traiter  plusieurs biopsies de grande taille de manière automatique, libérant ainsi le temps utilisé pour l'évaluation des coupes histologiques. Ensuite un gain de précision, car l'évaluation des biopsies par un expert humain est en général qualitative. La description de phénotype se limite généralement à des adjectifs de quantité tels que "peu", "moyen" ou "beaucoup". Grâce à une approche de comptage par \gls{ia}, il est alors possible d'obtenir la quantité précise de fibres présentant un noyau centralisé par exemple et ainsi de pouvoir établir des seuils pour une analyse plus approfondie.
 
-\gls{myoquant}, l'outil présenté dans ce chapitre, est une suite de méthodes pour quantifier différents marqueurs pathologiques dans les biopsies de \gls{mc}. \gls{myoquant} intègre soit des méthodes algorithmiques simples basées sur des modèles d'\gls{ia} généralistes en histologie comme CellPose (\cite{stringer_cellpose_2021}) et Stardist (\cite{weigert_star-convex_2020}), soit des méthodes basées sur des modèles \gls{ia} développés à partir de nos données. Actuellement, \gls{myoquant} est capable de quantifier des marqueurs pathologiques dans trois des cinq colorations réalisées en routine lors du diagnostic des \gls{mc}: la centralisation des noyaux à la coloration \gls{he}, un déséquilibre dans le ratio des fibres de type 1 et 2 à la coloration ATPase et une répartition anormale des mitochondries dans les fibres musculaires à la coloration \gls{sdh}. Dans ce chapitre, nous allons voir comment ont été implémentées ces solutions de quantification automatique et des exemples d'application.
+\gls{myoquant}, l'outil présenté dans ce chapitre, est une suite de méthodes pour quantifier différents marqueurs histopathologiques dans les biopsies de \gls{mc}. \gls{myoquant} intègre soit des méthodes algorithmiques simples basées sur des modèles d'\gls{ia} généralistes en histologie comme CellPose (\cite{stringer_cellpose_2021}) et Stardist (\cite{weigert_star-convex_2020}), soit des méthodes basées sur des modèles \gls{ia} que nous avons développés à partir de nos données. Actuellement, \gls{myoquant} est capable de quantifier des marqueurs pathologiques dans trois des cinq colorations réalisées en routine lors du diagnostic des \gls{mc}: la centralisation des noyaux à la coloration \gls{he}, un déséquilibre dans le ratio des fibres de type 1 et 2 à la coloration ATPase et une répartition anormale des mitochondries dans les fibres musculaires à la coloration \gls{sdh}. Dans ce chapitre, nous allons voir comment ont été implémentées ces solutions de quantification automatique et des exemples d'application.
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.66\textwidth]{figures/myoquant_logo.png}
- \caption[Logo MyoQuant]{Logo de MyoQuant}
+ \caption[Logo MyoQuant]{\textbf{Logo de MyoQuant}}
  \label{fig:myoquant_logo}
 \end{figure}
 
@@ -16,7 +16,7 @@ Dans un premier temps, nous nous sommes intéressés à l'analyse de la position
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/he_example.jpg}
- \caption[Exemple de biopsie musculaire à la coloration HE]{Exemple de biopsie musculaire de CNM à la coloration HE dans laquelle on observe des fibres avec des noyaux centralisés.}
+ \caption[Exemple de biopsie musculaire à la coloration HE]{\textbf{Exemple de biopsie musculaire de CNM à la coloration HE }. On observe des fibres avec des noyaux centralisés (indiqué par une flèche noire).}
  \label{fig:he_example}
 \end{figure}
 
@@ -136,7 +136,7 @@ Pour réaliser cette quantification, la première étape consiste à segmenter, 
 \end{figure}
 
 \subsection{Exemple d'application: classification d'une coupe complète avec trois types de fibres}
-La coloration ATPase peut révéler plus de deux types de fibres musculaires. En effet, les fibres de type 2 ont plusieurs sous-types visualisables dans certaines conditions de coloration. Dans cet exemple, nous avons utilisé la méthode de classification développée pour détecter trois types de fibres. L'algorithme présenté dans cette section est capable d'établir autant de seuils automatiquement que spécifiés par l'utilisateur.. La figure \ref{fig:atp_paint_wsi} présente les résultats de classification d'une \gls{wsi} de biopsie musculaire colorée à l'ATP pH 4.6. Sur cette coupe on observe trois populations de fibres: des fibres pâles (fibres de type 2A), des fibres intermédiaires (fibres de type 2B) et de petites fibres très sombres localisées en haut de la coupe (fibres de type 1). La méthode de quantification a alors pu définir deux seuils pour séparer ces trois classes. 
+La coloration ATPase peut révéler plus de deux types de fibres musculaires. En effet, les fibres de type 2 ont plusieurs sous-types visualisables dans certaines conditions de coloration. Dans cet exemple, nous avons utilisé la méthode de classification développée pour détecter trois types de fibres. L'algorithme présenté dans cette section est capable d'établir autant de seuils automatiquement que spécifiés par l'utilisateur. La figure \ref{fig:atp_paint_wsi} présente les résultats de classification d'une \gls{wsi} de biopsie musculaire colorée à l'ATP pH 4.6. Sur cette coupe on observe trois populations de fibres: des fibres pâles (fibres de type 2A), des fibres intermédiaires (fibres de type 2B) et de petites fibres très sombres localisées en haut de la coupe (fibres de type 1). La méthode de quantification a alors pu définir deux seuils pour séparer ces trois classes. 
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/atp_wsi.png}
@@ -185,7 +185,7 @@ Enfin, nous nous sommes intéressés à l'analyse de la répartition des mitocho
 
 \begin{figure}[!ht]
  \centering
- \includegraphics[width=0.8\textwidth]{figures/sdh_example.jpg}
+ \includegraphics[width=0.8\textwidth]{figures/sdh_example.png}
  \caption[Exemple de biopsie musculaire à la coloration SDH]{Exemple de biopsie de muscle de souris modèle de CNM à la coloration SDH}
  \label{fig:sdh_example}
 \end{figure}
@@ -315,7 +315,7 @@ La figure \ref{fig:identify_errors} résume la démarche utilisée pour identifi
 
 La figure \ref{fig:list_errors} présente huit exemples pris au hasard parmi les 228 images ayant une prédiction discordante avec l'annotation et un haut niveau de confiance du modèle. On observe par exemple pour la première et la dernière image, qu'elles ont été annotées par l'expert comme saines et prédites comme anormales par le modèle. En regardant l'image de la fibre, on observe une tache centrale caractéristique de fibres ayant une répartition mitochondriale anormale. Ceci laisse donc penser qu'il y a eu une erreur d'annotation pour ces deux fibres, considérée à tort comme saine. De même, pour la seconde image, annotées comme anormale, mais prédite comme saine, on observe la présence d'un marquage homogène sans agglutination caractéristique du marquage au centre, il n'y a donc visiblement pas de raison pour la classer comme anormale.
 
-Ces résultats montrent que le modèle est capable après entrainement d'identifier des erreurs humaines lors de l'évaluation des fibres. Ces erreurs d'annotation peuvent être dues à des inattentions ou des erreurs de clic lors du travail manuel et répétitif d'annotation des  16 787 images par les experts. La détection de potentielles erreurs par le modèle et leur réannotation pourrait permettre d'améliorer le jeu de données utilisé pour l'entrainement du modèle et ainsi obtenir de meilleures performances de classification.
+Ces résultats montrent que le modèle est capable d'identifier des erreurs humaines lors de l'évaluation des fibres. Ces erreurs d'annotation peuvent être dues à des inattentions ou des erreurs de clic lors du travail manuel et répétitif d'annotation des  16 787 images par les experts. La détection de potentielles erreurs par le modèle et leur réannotation pourrait permettre d'améliorer le jeu de données utilisé pour l'entrainement du modèle et ainsi obtenir de meilleures performances de classification.
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/list_sdh_errors.png}
@@ -327,10 +327,10 @@ Ces résultats montrent que le modèle est capable après entrainement d'identif
 Pour faciliter l'utilisation et la diffusion de \gls{myoquant}, nous avons développé l'outil sous deux formes: un outil en ligne de commande et une version de démonstration en ligne.
 
 \subsection{Outil en ligne de commande}
-Sous sa forme d'outil en ligne de commande, \gls{myoquant} est téléchargeable comme bibliothèque Python disponible dans le répertoire officiel PyPI à l'adresse \href{https://pypi.org/project/myoquant/}{https://pypi.org/project/myoquant/}. La version en ligne de commande permet de traiter un grand nombre d'images et/ou des images de coupes complètes trop grandes pour être traitées via une interface en ligne. Ceci permet de traiter les images sur des serveurs de calcul équipés de \gls{gpu} afin d'accélérer le processus d'analyse et de sauvegarder l'ensemble des résultats.
+Sous sa forme d'outil en ligne de commande, \gls{myoquant} est téléchargeable comme bibliothèque Python disponible dans le répertoire officiel PyPI à l'adresse \href{https://pypi.org/project/myoquant/}{https://pypi.org/project/myoquant/}. La version en ligne de commande permet de traiter un grand nombre d'images et/ou des images de coupes complètes trop grandes pour être traitées \textit{via} une interface en ligne. Ceci permet de traiter les images sur des serveurs de calcul équipés de \gls{gpu} afin d'accélérer le processus d'analyse et de sauvegarder l'ensemble des résultats.
 
 \subsection{Version de démonstration en ligne}
-\gls{myoquant} est aussi disponible sous forme d'interface de démonstration en ligne développée grâce à \textit{Streamlit}. Cette interface en ligne est utile pour faire des démonstrations de l'outil de façon visuelle, notamment grâce aux différents graphiques d'explicabilité générés. Cette interface permet aussi de tester l'outil sur des images de petites tailles afin d'évaluer quels seraient les meilleurs paramètres pour obtenir une classification de qualité. \gls{myoquant}-Streamlit est disponible en ligne à l'adresse \href{https://lbgi.fr/MyoQuant/}{https://lbgi.fr/MyoQuant/} ainsi que sur \textit{HuggingFace Space} \href{https://huggingface.co/spaces/corentinm7/MyoQuant}{https://huggingface.co/spaces/corentinm7/MyoQuant}.
+\gls{myoquant} est aussi disponible sous forme d'interface de démonstration en ligne développée grâce à \textit{Streamlit}. Cette interface en ligne est utile pour faire des démonstrations de l'outil de façon visuelle, notamment grâce aux différents graphiques d'explicabilité générés. Cette interface permet aussi de tester l'outil sur des images de petites tailles afin d'évaluer quels seraient les meilleurs paramètres pour obtenir une classification de qualité. \gls{myoquant}-\textit{Streamlit} est disponible en ligne à l'adresse \href{https://lbgi.fr/MyoQuant/}{https://lbgi.fr/MyoQuant/} ainsi que sur \textit{HuggingFace Space} \href{https://huggingface.co/spaces/corentinm7/MyoQuant}{https://huggingface.co/spaces/corentinm7/MyoQuant}.
 
 \section{Limites et perspectives de développement}
 L'outil \gls{myoquant} permet de quantifier des marqueurs pathologiques dans trois des cinq colorations réalisées en routine pour le diagnostic des \gls{mc}. Pour l'instant, \gls{myoquant} n'inclus pas de méthode dédiée à l'analyse des coupes à la coloration \gls{tg} pour détecter les agrégats protéiques, ni de méthode pour la coloration NADH pouvant mettre en évidence la présence de \textit{cores}. Des modèles \gls{ia} suivants la même méthodologie que ce que nous avons développé pour la coloration \gls{sdh} devront être développés en conséquence. Il est aussi nécessaire pour certaines colorations d'élargir le champ des marqueurs pathologiques quantifiés. Par exemple, pour la coloration \gls{he}, la taille des fibres pour  la détection de fibres atrophiques est aussi évaluée en routine lors du diagnostic en complément de la position des noyaux.
