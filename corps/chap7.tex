@@ -192,11 +192,11 @@ Autre (non-CM) & 30 \\
 Au total, 8 conditions expérimentales pour la prédiction de diagnostics ont été évaluées: \textit{Embedding} OpenAI vs Instructor, rapports en Français vs traduits Anglais, \textit{Random Forest} vs Perceptrons (représenté en figure \ref{fig:myoclassify_flow}). Pour chacune des conditions expérimentales, les hyperparamètres des modèles ont été optimisés par grille et les performances ont été évaluées grâce à 10 cross-validations. Ceci a été fait pour (i) obtenir des modèles avec les meilleures performances possibles (optimisation par grille) et (ii) avoir une estimation robuste des performances (moyenne sur 10 essais par cross-validation). L'ensemble des résultats de ces entraînements (métriques de performances et modèles) sont disponibles en ligne à l'adresse: \url{https://wandb.ai/lambda-science/myo-text-classify/reports/MyoClassify-all-conditions-results--Vmlldzo0NDMyMTcw}.
 \begin{table}[!ht]
 \centering
-\caption[Récapitulatif des performances des modèles \textit{MyoClassify}]{\textbf{Récapitulatif des performances des modèles \textit{MyoClassify}}. Pour chaque modèle, les valeurs d'exactitude, d'exactitude pondérée, de score F1 pondéré et macro et de score F1 uniquement pour le classe CNM ont été mesurées.}
+\caption[Récapitulatif des performances des modèles \textit{MyoClassify}]{\textbf{Récapitulatif des performances des modèles \textit{MyoClassify}}. Pour chaque modèle, les valeurs d'exactitude, d'exactitude équilibrée, de score F1 pondéré et macro et de score F1 uniquement pour le classe CNM ont été mesurées.}
 \label{tab:myoclassify_metrics}
 \begin{tabularx}{\textwidth}{|X|c|c|c|c|c|}
 \hline
-\textbf{Nom} & \textbf{Exactitude} & \textbf{Exact. Pond.} & \textbf{F1 pond.} & \textbf{F1-Macro} & \textbf{F1 CNM} \\\hline
+\textbf{Nom} & \textbf{Exactitude} & \textbf{Exact. Equi.} & \textbf{F1 pond.} & \textbf{F1-Macro} & \textbf{F1 CNM} \\\hline
 Instructor FR RF & 0.65 & 0.56 & 0.62 & 0.54 & 0.11 \\ \hline
 Instructor EN RF & 0.67 & 0.54 & 0.62 & 0.52 & 0.00 \\ \hline
 Instructor FR MLPC & 0.67 & 0.57 & 0.66 & 0.56 & 0.08 \\ \hline
