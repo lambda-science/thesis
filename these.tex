@@ -24,6 +24,9 @@
 \usepackage{float}
 \setlength{\epigraphwidth}{.6\textwidth}
 \addbibresource{auxiliaires/references.bib}
+\AtEveryBibitem{%
+  \clearfield{note}%
+}
 \makeglossaries
 \setglossarystyle{indexhypergroup}
 \setacronymstyle{long-sc-short}

@@ -30,7 +30,7 @@ Ensuite, une troisième \gls{regex} a été ajoutée pour détecter les dates au
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Expression régulière} & \textbf{Syntaxe} & \textbf{Exemples d'utilisation} \\ \hline
-Nom patient & Nom.*: *([A-Za-zÀ-ÿ- ]+) & Nom du patient : Pierre Laroche \\ \hline
+Nom patient & Nom.*: *([A-Za-zÀ-ÿ- ]+) & Nom : Pierre Laroche \\ \hline
 Nom patient 2& (([A-Z][a-zÀ-ÿ-]\{3,\} ?)+ ([A-Z-]\{3,\} ?)+) & LAROCHE Pierre \\ \hline
 Nom patient 3 & (([A-Z-]\{3,\} ?)+ ([A-Z][a-zÀ-ÿ-]\{3,\} ?)+) & Pierre André LAROCHE \\ \hline
 Date & ([(.]?[0-9]\{1,2\}[./][0-9]\{1,2\}[./][0-9]\{1,4\}[().]?) & 07/04/1994, 07.05.18 \\ \hline
