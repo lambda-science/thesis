@@ -1,4 +1,4 @@
-\chapter{NLMyo : Traitement de rapports textuels par LLMs}
+\chapter{NLMyo : Traitement de rapports textuels par LLMs}\label{chap_nlmyo}
 
 Dans les deux précédents chapitres, nous avons présenté \gls{impatient} un outil d'annotation et d'exploration de compte rendu de biopsie en texte libre. \gls{impatient} utilise un système à base d'ontologie et de vocabulaire standard pour détecter et annoter la présence ou l'absence d'éléments pathologiques dans les biopsies musculaires. Cependant, ce système présente certaines limites. Tout d'abord, il requiert de créer un vocabulaire standard exhaustif pour décrire les observations dans les biopsies musculaires, ce qui est un travail manuel important. De plus, le système d'annotation semi-automatique utilise un système à base de règles et de correspondance exacte des mots aux ontologies existantes. Cette correspondance exacte réduit la flexibilité du système et sa sensibilité de détection, il faut alors réaliser un travail d'annotation manuel important pour numériser les comptes rendus de biopsie. 
 
@@ -89,7 +89,7 @@ La partie précédant le mot clé "ENTRÉE" correspond à l'instruction décriva
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.8\textwidth]{figures/llms_anonym.png}
- \caption[Exemple anonymisation LLMs]{\textbf{Exemple d'anonymisation d'un courrier médical factice avec la méthode par LLMs}. \textbf{(A) }Texte brut, \textbf{(B)} Anonymisation par RegEx, \textbf{(C) }JSON brut généré par le \gls{llms} GPT-3.5-turbo (OpenAI), \textbf{(D)} Anonymisation à partir du JSON généré par \gls{llms}.}
+ \caption[Exemple anonymisation LLMs]{\textbf{Exemple d'anonymisation d'un courrier médical factice avec la méthode par LLMs}. \textbf{(A)} Texte brut, \textbf{(B)} Anonymisation par RegEx, \textbf{(C)} JSON brut généré par le \gls{llms} GPT-3.5-turbo (OpenAI), \textbf{(D)} Anonymisation à partir du JSON généré par \gls{llms}.}
  \label{fig:llms_anonym}
 \end{figure}
 
@@ -229,7 +229,7 @@ Dans le cadre du modèle d'\textit{embedding} d'OpenAI, la traduction des rappor
 En termes de performances brutes, il semble recommandable de: (i) traduire les comptes rendus en anglais (ii) d'utiliser le modèle d'OpenAI pour l'\textit{embedding} et (iii) d'entrainer un perceptron multi-couche pour apprendre à différencier les diagnostics en fonction de la représentation numérique des rapports (\textit{embeddings}).
 
 \section{\textit{MyoSearch}: un moteur de recherche de patients}
-En utilisant les techniques d'\textit{embedding}  pour représenter un texte sous forme numérique en capturant son sens sémantique, il est alors possible de calculer un score de similarité entre une requête en texte libre et une masse de documents pour trouver le document le plus proche. Avec \textit{MyoSearch} nous avons créé un outil qui permet de faire des requêtes en texte libre parmi l'ensemble des rapports de biopsies de patients. Il est alors possible de chercher rapidement chez quels patients un symptôme ou diagnostic particulier est présent. Cette création de moteur de recherche est totalement automatique et ne nécessite aucun travail d'annotation, contrairement à l'annotation de comptes rendus dans \gls{impatient}. Elle se déroule en deux phases: (i) l'intégration des données pour constituer la base de données puis (ii) la phase de requêtage de la base de données en fonction de l'entrée de l'utilisateur.
+En utilisant les techniques d'\textit{embedding} pour représenter un texte sous forme numérique en capturant son sens sémantique, il est alors possible de calculer un score de similarité entre une requête en texte libre et une masse de documents pour trouver le document le plus proche. Avec \textit{MyoSearch} nous avons créé un outil qui permet de faire des requêtes en texte libre parmi l'ensemble des rapports de biopsies de patients. Il est alors possible de chercher rapidement chez quels patients un symptôme ou diagnostic particulier est présent. Cette création de moteur de recherche est totalement automatique et ne nécessite aucun travail d'annotation, contrairement à l'annotation de comptes rendus dans \gls{impatient}. Elle se déroule en deux phases: (i) l'intégration des données pour constituer la base de données puis (ii) la phase de requêtage de la base de données en fonction de l'entrée de l'utilisateur.
 
 \subsection{Intégration des rapports: création de la base de données de vecteurs}
 \begin{figure}[!ht]
