@@ -6,12 +6,12 @@ Dans cette thèse, nous avons développé des méthodes basées sur les \gls{ia}
 Pour développer ces méthodes, nous nous sommes basés sur des données d'imagerie et des comptes rendus de biopsie. La source de ces données est présentée ci-dessous.
 
 \subsection{Comptes rendus de biopsie de l'institut de myologie de Paris}
-La première source de données provient de l'institut de myologie de Paris. Grâce à une collaboration avec l'équipe du laboratoire d’histopathologie d'abord dirigé par Norma B. Romero puis Teresinha Evangelista, nous avons pu récupérer et utiliser 192 comptes rendus de biopsie musculaire de patients atteints de myopathies (congénitales, dystrophies ou autre), dont 138 spécifiquement atteint par des myopathies congénitales identifiées. Ces rapports sous format papier ont été scannés puis anonymisés d'abord avec un outil d'anonymisation que nous avons développé (présenté dans le chapitre (\ref{chap_nlmyo})), puis vérifiés à la main. La figure \ref{fig:compte-rendu-exemple} présente la structure d'un compte rendu anonymisé de biopsie typique présent dans le jeu de données. Il y a deux types de comptes rendus, ceux qui concernent les observations en microscopie photonique et ceux qui concernent les observations en microscopie électronique. Cependant, cette structure peut varier en fonction de l'année de production du compte rendu, certains sont totalement déstructurés.
+La première source de données provient de l'institut de myologie de Paris. Grâce à une collaboration avec l'équipe du laboratoire d’histopathologie d'abord dirigé par Norma B. Romero puis Teresinha Evangelista, nous avons pu récupérer et utiliser 192 comptes rendus de biopsie musculaire de patients atteints de myopathies (congénitales, dystrophies ou autre), dont 138 spécifiquement atteint par des myopathies congénitales identifiées. Ces rapports sous format papier ont été scannés puis anonymisés d'abord avec un outil d'anonymisation que nous avons développé (présenté dans le chapitre \ref{chap_nlmyo}), puis vérifiés à la main. La figure \ref{fig:compte-rendu-exemple} présente la structure d'un compte rendu anonymisé de biopsie typique présent dans le jeu de données. Il y a deux types de comptes rendus, ceux qui concernent les observations en microscopie photonique et ceux qui concernent les observations en microscopie électronique. Cependant, cette structure peut varier en fonction de l'année de production du compte rendu, certains sont totalement déstructurés.
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.9\textwidth]{figures/compte_rendu_exemple.png}
- \caption[Exemple de compte rendu de biopsie]{\textbf{Exemple de compte rendu de biopsie en microscopie photonique anonymisé de l'institut de myologie de Paris}. Les comptes rendus sont structurés en trois sections: une entête avec des informations générales sur la ptient, un corps de texte contenant une liste de colorations et les observations réalisée et une conclusion avec les diagnostic final et un commentaire optionel.}
+ \caption[Exemple de compte rendu de biopsie]{\textbf{Exemple de compte rendu de biopsie en microscopie photonique anonymisé de l'institut de myologie de Paris}. Les comptes rendus sont structurés en trois sections: un entête avec des informations générales sur la patient, un corps de texte contenant une liste de colorations et les observations réalisées et une conclusion avec le diagnostic final et un commentaire optionnel.}
  \label{fig:compte-rendu-exemple}
 \end{figure}
 
@@ -41,7 +41,7 @@ La validation croisée (\textit{cross-validation} en anglais) est une technique 
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.9\textwidth]{figures/cross-val.png}
- \caption[Schéma validation-croisée]{\textbf{Schéma du principe de la validation croisée}. Ici la valiation-croisée est réalisée en \textit{5 folds}, chaque point de donné sera utilisé une fois dans le jeu de test et 4 fois dans 4 jeux d'entrainement (modifié de la documentation de \textit{Scikit-Learn}).}
+ \caption[Schéma validation-croisée]{\textbf{Schéma du principe de la validation croisée}. Ici la valiation-croisée est réalisée en \textit{5 folds}, chaque point de donnée sera utilisé une fois dans le jeu de test et 4 fois dans 4 jeux d'entrainement (modifié de la documentation de \textit{Scikit-Learn}).}
  \label{fig:cross-val}
 \end{figure}
 \subsection{Recherche d'hyperparamètres}
@@ -74,7 +74,7 @@ La matrice de confusion est une matrice en deux dimensions qui compare les préd
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.5\textwidth]{figures/confusion_example.png}
- \caption[Exemple de matrice de confusion binaire]{Exemple de matrice de confusion binaire. Pour une classification à deux classes la matrices de confusion est composée de vraispositif (VP), vrais négatifs (VN), faux positifs (FP), faux négatifs (VN).}
+ \caption[Exemple de matrice de confusion binaire]{\textbf{Exemple de matrice de confusion binaire.} Pour une classification à deux classes la matrices de confusion est composée de vraispositif (VP), vrais négatifs (VN), faux positifs (FP), faux négatifs (VN).}
  \label{fig:confusion-example}
 \end{figure}
 
@@ -92,7 +92,7 @@ La figure \ref{fig:prec_recall_spec} présente les notions de précision, sensib
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/prec_recall.png}
- \caption[Précision, sensibilité et spécificité]{\textbf{Schéma de la notion de précision, sensibilité et spécificité} (modifié de Wikipédia "Précision et rappel").}
+ \caption[Précision, sensibilité et spécificité]{\textbf{Schéma de la notion de précision, sensibilité et spécificité}. L'exemple d'un test de dépistage COVID est utilisé pour illustrer l'utilité des différentes mesures pour évaluer les performances du test (modifiée de Wikipédia "Précision et rappel").}
  \label{fig:prec_recall_spec}
 \end{figure}
 

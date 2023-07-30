@@ -30,7 +30,7 @@ La multiplication du nombre des neurones dans un réseau de neurones et de leur 
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.9\textwidth]{figures/dnn_archi.png}
- \caption[Représentation de différentes architectures de \gls{dnn}]{\textbf{Représentation de différentes architectures de \gls{dnn}} (modifié de \cite{leijnen_neural_2016})}
+ \caption[Représentation de différentes architectures de \gls{dnn}]{\textbf{Représentation de différentes architectures de \gls{dnn}}. Le type de neurones, leurs organisations en couches et les interconnections qui les lient définissent des architectures qui leur confère certaines capacités comme le traitement d'images (DCN) où encore la mémoire à court terme (LSTM). (modifié de \cite{leijnen_neural_2016})}
  \label{fig:dnn_archi}
 \end{figure}
 
@@ -49,7 +49,7 @@ La figure \ref{fig:loss_func} présente un exemple théorique de valeurs de fonc
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/loss_function.png}
- \caption[Schéma d'un exemple de fonction de coût lors d'un entraînement]{\textbf{Schéma d'un exemple de fonction de coût lors de l'entrainement d'un \gls{dnn}.} Au cours de l'entrainement, la fonction de cout baisse après chaque cycle d'apprentissage à la fois pour le jeu d'entrainement et le jeu de validation. Puis celle du jeu d'entrainement continu de baisser tandis que celle du jeu de validation augmente: le modèle commence un sur-apprentissage, il est nécessaire de stopper l'entrainement}
+ \caption[Schéma d'un exemple de fonction de coût lors d'un entraînement]{\textbf{Schéma d'un exemple de fonction de coût lors de l'entrainement d'un \gls{dnn}.} Au cours de l'entrainement, la fonction de cout baisse après chaque cycle d'apprentissage à la fois pour le jeu d'entrainement et le jeu de validation. Puis celle du jeu d'entrainement continu de baisser tandis que celle du jeu de validation augmente: le modèle commence un sur-apprentissage, il est nécessaire de stopper l'entrainement.}
  \label{fig:loss_func}
 \end{figure}
 \subsubsection{Rétropropagation et descente de gradient}
@@ -93,7 +93,7 @@ EfficientNetB2 & 9,2 & 80,1& 6,5 \\
 EfficientNetB3 & 12,3 & 81,6 & 8,8 \\
  \hline
 \end{tabular}
-\caption[Tableau de comparaison d'architectures de \gls{dnn} et performances]{\textbf{Tableau de comparaison d'architectures de \gls{dnn} et performances} (\cite{chollet_keras_2023})}
+\caption[Tableau de comparaison d'architectures de \gls{dnn} et performances]{\textbf{Tableau de comparaison d'architectures de \gls{dnn} et performances}. Pour un même type d'architecture, l'augmentation du nombre de paramètres améliore les performances, mais réduit aussi la vitesse d'inférence. Cependant un nombre de paramètres plus élevé ne signifie pas forcément de meilleures performances quand on compare deux architectures différentes. (\cite{chollet_keras_2023})} 
 \label{table:dnn-size}
 \end{table}
 

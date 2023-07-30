@@ -68,7 +68,7 @@ Les données sont le point critique des techniques de \gls{ml}. Elles représent
  5 & 101 & oui & oui & Malade\\ 
  \hline
 \end{tabular}
-\caption[Exemple de tableau de données fictives de patients]{\textbf{Exemple de tableau de données fictives de patients}}
+\caption[Exemple de tableau de données fictives de patients]{\textbf{Exemple de tableau de données fictives de patients}. Les "?" indiquent l'absence d'information.}
 \label{table:dataset_intro}
 \end{table}
 Cette contrainte sur la structure nécessaire du jeu de données pour les algorithmes de \gls{ml} met en évidence les limites de leurs utilisations pour l'analyse de données non structurées telles que le texte libre, les données d'imagerie. Il est nécessaire en amont de structurer ces données à travers des descripteurs pertinents pour les exploiter.
@@ -100,7 +100,7 @@ La figure \ref{fig:ml-landscape} représente schématiquement la classification 
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/ml_landscape.png}
- \caption[Schéma des méthodes de machine-learning]{\textbf{Schéma de la classification des tâches, des modes d'apprentissage et des différents cas d'applications et algorithmes associés en \textit{machine-learning}}}
+ \caption[Schéma des méthodes de machine-learning]{\textbf{Schéma de la classification des tâches, des modes d'apprentissage et des différents cas d'applications et algorithmes associés en \textit{machine-learning}}. Il y a trois grands types d'apprentissage en machine-learning: l'apprentissage supervisé, non supervisé et par renforcement. Le diagnostic de patient par machine-learning est une tâche de classification par apprentissage supervisé.}
  \label{fig:ml-landscape}
 \end{figure}
 
@@ -116,11 +116,11 @@ Appliqué au \textit{machine-learning}, C représente alors les points de donné
 
 Les récentes recherches en \gls{ia} ont amené à l'émergence du domaine d'\gls{xai}. L'\gls{xai} cherche à concevoir des méthodes pour rendre les modèles d'\gls{ia} et de \gls{ml} plus transparents et explicables, ce qui est critique dans le cadre de l'application de ces modèles dans des domaines à haut risque, comme le domaine médical (\cite{arrieta_explainable_2019}). L'objectif est donc de concevoir des méthodes de \gls{ml} dont on est capable de comprendre et d'évaluer les prédictions de manière intelligible.
 
-La figure (\ref{fig:xai-research}) présente le concept de compromis entre les performances des algorithmes et leur niveau d'explicabilité. De manière générale, plus un algorithme est performant d'un point de vue prédictif, moins il est explicable. Dès lors, le domaine de l'\gls{xai} va chercher : (i) à améliorer l'explicabilité des algorithmes performants et peu explicables ou (ii) à améliorer les performances des modèles les plus explicables.
+La figure \ref{fig:xai-research} présente le concept de compromis entre les performances des algorithmes et leur niveau d'explicabilité. De manière générale, plus un algorithme est performant d'un point de vue prédictif, moins il est explicable. Dès lors, le domaine de l'\gls{xai} va chercher : (i) à améliorer l'explicabilité des algorithmes performants et peu explicables ou (ii) à améliorer les performances des modèles les plus explicables.
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=1\textwidth]{figures/xai-research.png}
- \caption[Compromis entre interprétabilité et performances des algo de ML]{Compromis entre interprétabilité du modèle et performance d'algorithmes de ML. Représentation de la zone d'amélioration où réside le potentiel des techniques et outils de l'IA explicable (xAI) (Source: \cite{arrieta_explainable_2019})}
+ \caption[Compromis entre interprétabilité et performances des algo de ML]{\textbf{Compromis entre interprétabilité du modèle et performance d'algorithmes de ML.} Représentation de la zone où réside le potentiel d'amélioration des techniques et outils d'IA explicable (xAI) (\cite{arrieta_explainable_2019})}
  \label{fig:xai-research}
 \end{figure}
 
@@ -134,7 +134,7 @@ Les arbres de décision sont des modèles classiques en \gls{ml}. Cette méthode
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.6\textwidth]{figures/decision_tree.png}
- \caption[Exemple d'arbre de décision]{Exemple d'arbre de décision à 3 questions (3 nœuds pour 3 descripteurs) et 2 classes.}
+ \caption[Exemple de schéma d'arbre de décision]{\textbf{Exemple de schéma d'arbre de décision.} Cet arbre est composé de 3 questions (3 nœuds pour 3 descripteurs, représentés par des rectangles bleus) et 2 classes (disques verts et orange).}
  \label{fig:decision-tree}
 \end{figure}
 
@@ -142,7 +142,7 @@ Une évolution des arbres de décision pour les rendre plus complexes et perform
 \begin{figure}[!ht]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/random_forest.png}
- \caption[Fonctionnement de l'algorithme de forêt aléatoire]{Fonctionnement de l'algorithme de forêt aléatoire}
+ \caption[Schéma de fonctionnement de l'algorithme de forêt aléatoire]{\textbf{Schéma de fonctionnement de l'algorithme de forêt aléatoire}. Le jeu de données est divisé en plusieurs sous-jeux de données dans lesquels un sous-ensemble de descripteurs est conservé aléatoirement. Un arbre de décision est entrainé sur chacun de ces sous-jeux de données. La prédiction finale correspond à la majorité des prédictions de chaque arbre de décision.}
  \label{fig:random-forest}
 \end{figure}
 Les forêts aléatoires sont très utilisées en \gls{ml} et spécifiquement en biologie. En exemple d'application dans le domaine biomédicale, l'outil MISTIC (\textit{MISsense deleTeriousness predICtor}, \cite{chennen_mistic_2020}) développé dans notre équipe utilise des méthodes de forêts aléatoires pour calculer la pathogénicité des variants génétiques. Cependant, la forêt aléatoire et les méthodes de \textit{boosting} perdent en explicabilité. En effet, en raison du grand nombre d'arbres de décision générés, il n'est plus possible de suivre aisément le processus de prédiction suivant une suite de règles logiques pour un point de donnée. Il faut alors utiliser des méthodes d'explicabilité \textit{post-hoc} qui consistent à calculer l'importance numérique de chaque descripteur pour une prédiction donnée.
@@ -161,7 +161,7 @@ Les \gls{lcs} sont des algorithmes de \gls{ml} parmi les plus transparents et ex
 
  \hline
 \end{tabular}
-\caption{Exemple de règles fictives issues de l'entrainement d'un algorithme de LCS}
+\caption[Exemple de règles fictives issues de l'entrainement d'un algorithme de LCS]{\textbf{Exemple de règles fictives issues de l'entrainement d'un algorithme de LCS.} Les règles issues de l'entrainement d'un LCS sont sous la forme "SI [conditions] ALORS [prédiction]". À l'inverse de la forêt aléatoire où chaque arbre possède le même pouvoir de vote, chaque règle est associée à un poids, reflétant son importance lors du calcul de la prédiction finale.}
 \label{table:lcs-rules}
 \end{table}
 

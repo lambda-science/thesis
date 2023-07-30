@@ -10,13 +10,13 @@ Dans un premier temps, j'ai réalisé une analyse statistique exploratoire de ce
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=1\textwidth]{figures/impatient_explo.png}
-  \caption[Analyse statistique exploratoire IMPatienT (histogrammes)]{\textbf{Analyse statistique exploratoire de la base de données IMPatienT}: Histogrammes de répartition des patients en fonction de leur groupe d'âge, du gène muté responsable de la maladie et de leur classe de myopathies (némaline, core, centronucléaire, autre et pas de diagnostic établi (UNCLEAR).}
+  \caption[Analyse statistique exploratoire IMPatienT (histogrammes)]{\textbf{Analyse statistique exploratoire de la base de données IMPatienT}: Histogrammes de répartition des patients en fonction de leur groupe d'âge, du gène muté responsable de la maladie et de leur classe de myopathie (némaline, core, centronucléaire, autre (OTHER) et pas de diagnostic établi (UNCLEAR).}
   \label{fig:impatient_eda}
 \end{figure}
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/impatient_explo2.png}
-  \caption[Analyse statistique exploratoire IMPatienT (matrice)]{\textbf{Analyse statistique exploratoire de la base de données IMPatienT}: Matrice de corrélation partielle des termes du vocabulaire standard. La couleur rouge indique une corrélation négative (-1), la couleur bleue une corrélation positive (+1). Deux termes avec une corrélation positive sont deux termes qui ont une forte cooccurrence chez les patients.}
+  \caption[Analyse statistique exploratoire IMPatienT (matrice)]{\textbf{Analyse statistique exploratoire de la base de données IMPatienT}: Matrice de corrélation partielle des termes du vocabulaire standard. La couleur rouge indique une corrélation négative (-1), la couleur bleue une corrélation positive (+1). Deux termes avec une corrélation positive sont deux termes qui ont une forte co-occurrence chez les patients.}
   \label{fig:impatient_eda2}
 \end{figure}
 
@@ -50,7 +50,7 @@ Perceptron & 0.67 & \textbf{0.86} & 0.78 & \textbf{0.93}\\
 ExSTraCS & 0.61 & 0.71 & 0.61 & 0.86 \\
 \hline
 \end{tabular}
-\caption[Comparaison des performances des modèles (moyenne sur 10 folds de cross-validation)]{\textbf{Comparaison des performances des modèles (moyenne sur 10 \textit{folds} de cross-validation)}}
+\caption[Comparaison des performances des modèles (moyenne sur 10 folds de cross-validation)]{\textbf{Comparaison des performances des modèles (moyenne sur 10 \textit{folds} de cross-validation)}. Les méthodes SVM et Boosting ont obtenu les meilleures performances à travers la majorité des métriques. La méthode LCS ExSTraCS a obtenu des performances 22\% inférieurs aux meilleurs modèles.}
 \label{table:ml_metrics}
 \end{table}        
 Les algorithmes \gls{svm} et \textit{Boosting } se sont révélés être les meilleurs algorithmes en termes d'exactitude équilibrée et de score \gls{mcc}, cependant ces deux modèles ne sont pas des modèles transparents et nécessitent de méthodes \textit{post-hoc} pour interpréter les prédictions (explicabilité). L'algorithme ExSTraCS, qui lui est un modèle totalement transparent et explicable, a obtenu des performances 22\% inférieures au meilleur modèle, avec un score \gls{mcc} de 0,61 et une exactitude de 0,71, ce qui est constamment en dessous des autres algorithmes. Cette performance plus faible peut s'expliquer en partie par les contraintes lors de son entraînement lié à l'explicabilité. En effet, nous avons volontairement restreint le nombre de règles que l'algorithme peut générer pour le rendre plus facilement interprétable et pour pouvoir en extraire les principales règles de classification entre les sous-types de myopathies (voir section \ref{lcs_viz_sec}). Il est intéressant de noter que l'algorithme de classification d'arbre de décision, qui est à la fois simple et par nature explicable, a obtenu des performances dans la moyenne des autres algorithmes, tout en ayant un temps d'entraînement faible de 17 secondes en raison de sa simplicité (tableau \ref{tab:pipeline_times}). À titre de comparaison, le \gls{lcs} ExSTraCS a nécessité un temps d'entraînement de 5min39, et ceci sans phase d'optimisation des hyperparamètres.
@@ -73,13 +73,13 @@ Les algorithmes \gls{svm} et \textit{Boosting } se sont révélés être les mei
         ExSTraCS & 339 \\
         \bottomrule
     \end{tabular}
-    \caption[Temps d'optimisation des hyperparamètres et d'entraînement des algorithmes de ML]{\textbf{Temps d'optimisation des hyperparamètres et d'entraînement des algorithmes de ML}}
+    \caption[Temps d'optimisation des hyperparamètres et d'entrainement des algorithmes de ML]{\textbf{Temps d'optimisation des hyperparamètres et d'entrainement des algorithmes de ML}. Certains modèles simples comme l'arbre de décision, la régression logistique et le modèle SVM ont un temps d'entrainement et d'optimisation inférieur à 1 minute. Les méthodes complexes comme le Boosting, la forêt aléatoire et le LCS ont des temps d'entrainement et d'optimisation supérieurs à 30 minutes.}
     \label{tab:pipeline_times}
 \end{table}
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=1\textwidth]{figures/feature_importance.png}
-  \caption[Histogramme des 10 termes les plus déterminants pour la classification]{\textbf{Histogramme des 10 termes les plus déterminants pour la classification pour chaque algorithme considéré}}
+  \caption[Histogramme des 10 termes les plus déterminants pour la classification]{\textbf{Histogramme des 10 termes les plus déterminants pour la classification pour chaque algorithme considéré}. Une très grande importance est accordée par tous les algorithmes à la présence de bâtonnets pour faire la différence entre les sous-types de myopathies.}
   \label{fig:feautre_importance}
 \end{figure}
 L'histogramme montrant les 10 termes les plus importants pour la classification de toutes les classes de \gls{mc} dans l'ensemble des algorithmes (fig. \ref{fig:feautre_importance}) mets en évidence des termes attendus comme la présence de bâtonnets, de cores ou de noyaux centralisés pour différencier \gls{nm}, \gls{com} et \gls{cnm} avec un poids très important pour la présence de bâtonnets. Mais on observe aussi la présence de critères moins attendus, comme la présence d'anomalie au marquage PAS ou l'atrophie des fibres de type 2. De plus on observe aussi que tout les algorithmes n'accordent pas la même importance aux mêmes termes. Par exemple, la présence de fibres de type 2 atrophiques ne semblent importantes que pour la méthodes bayésienne naïve.
