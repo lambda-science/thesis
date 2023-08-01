@@ -12,7 +12,6 @@ Dans ce premier chapitre d'introduction, nous présenterons d'abord les \textit{
 Dans cette section, nous présentons trois exemples de données biomédicales qui rendent compte de la diversité de données biomédicales de patients et donc du défi de leur exploitation. Nous apportons une attention particulière aux données d'imagerie, aux comptes rendus médicaux et aux données génétiques, car ces données sont essentielles au diagnostic des myopathies congénitales. Cependant, cette présentation ne se veut pas exhaustive, les données biomédicales sont un domaine très vaste qui regroupe de nombreux autres types de données.
 
 \subsection{Définition du \textit{Big Data}}
-
 Le terme \textit{Big Data} est utilisé pour faire référence à l'immense quantité de données complexes et hétérogènes produites par cette révolution numérique et le développement des technologies haut débit (\cite{de_mauro_formal_2016}). La définition des \textit{Big Data} a été enrichie au fur et à mesure des années, d'abord par 3 concepts puis 5 et même jusqu'à 7 (\cite{garcia_what_2022}). La définition la plus commune aujourd'hui des \textit{Big Data} se compose des 5 "V": le volume, la variété, la vélocité, la véracité et la valeur (\cite{ishwarappa_brief_2015}). Ainsi pour être considérée comme \textit{Big Data}, les données doivent: (i) être volumineuses, du gigaoctet à l'exaoctet (ii) être variées, c'est-à-dire multimodales (iii) avoir une vélocité de création et de traitement importante (iv) être véraces, c'est-à-dire valide et (v) avoir une forte valeur ajoutée, c'est-à-dire qu'elles doivent être utiles. (\cite{garcia_what_2022}).
 
 Les données biomédicales sont en adéquation avec cette définition (\cite{zheng_application_2021}). Grâce aux améliorations en techniques d'acquisitions (séquençage de nouvelle génération, imagerie haute-résolution) elles sont volumineuses et possèdent une forte vélocité. Ces données sont variées, contenant des informations sur les plans génétique, phénotypique et histologique par exemple. De plus, elles ont une certaine véracité couplée à une forte valeur ajoutée. En effet, ce sont de manière générale des données générées par des experts (médecin ou biologiste) et liées à des patients (et donc fortement valorisées). Il est alors juste de qualifier les données biomédicales de \textit{Big Data} (\cite{sonawane_network_2019}. Dans la prochaine section, nous allons voir en détail les différentes modalités de données biomédicales de patients, leurs acquisitions et les challenges que présente leur analyse.
@@ -32,12 +31,14 @@ Le développement de l'imagerie a permis une diversification des techniques (IRM
 Enfin, les progrès en terme de technologies de séquençage, grâce notamment aux technologies de seconde génération à lectures courtes (technologie Illumina) et aux technologies de troisième génération à lectures longues (technologie PacBio et Nanopore), ont permis l'accès à l'ensemble des informations génétiques de l'Homme. De plus, la baisse des couts de séquençage rend possible l'utilisation de séquençage de génome complet pour le diagnostic de maladies génétiques chez les patients (\cite{rabbani_next-generation_2012}). 
 
 Plus récemment, les techniques dites "omiques" (figure \ref{fig:intro-omics}, \cite{momeni_survey_2020}) sont utilisées pour mieux comprendre les pathologiques telles que les technologies de transcriptomiques (expression ARN des gènes), épigénétiques, protéomiques (expression protéique des gènes) et métabolomiques (étude des métabolites). Ces technologies permettent d'obtenir une vue globale des mécanismes biologiques qui opèrent au sein d'un tissu. Elles permettent d'accéder à tous les niveaux d'information chez un individu malade et sont devenues omniprésentes notamment en cancérologie, car elles ouvrent la voie à la médecine de précision (\cite{chen_promise_2013, dai_advances_2022, raufaste-cazavieille_multi-omics_2022}).
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=1\textwidth]{figures/intro_omics.png}
  \caption[Méthodes de séquençages "omiques"]{\textbf{Schéma des différentes méthodes de séquençages "omiques"}. Les méthodes omiques donnent accès à une vue globale des mécanismes biologiques dans les tissus biologiques. (Modifié de \cite{momeni_survey_2020})}
  \label{fig:intro-omics}
 \end{figure}
+
 Les données de séquençage sont massives, le génome humain mesurant environ 3,1~milliards de paires de bases (bp), et le séquençage d'un génome unique avec une profondeur de 50X (nécessaire pour la détection de mutation génétique) représente un minimum de ~150 milliards de paires de bases lues et stockées, pour un individu. Ces données de séquence massives requièrent des outils spécifiques et un matériel informatique adapté à leur traitement. Outre l'aspect massif de ces données, la détection de mutations pathogènes est complexe. L'identification du gène responsable d'une maladie génétique reste un challenge lors du diagnostic, même avec les données de séquençage complètes.
 
 \subsection{Ressources et initiatives en données biomédicales et maladies rares}\label{onto_ref}
@@ -55,7 +56,8 @@ Le \gls{ml} est une branche de l'\gls{ia} qui regroupe un ensemble d'algorithmes
 
 \subsection{Les formats et partitionnements des données}
 Les données sont le point critique des techniques de \gls{ml}. Elles représentent l'ensemble des informations utilisées par un algorithme de \gls{ml} pour réaliser son apprentissage et réaliser des prédictions. Pour être utilisables par les algorithmes de \gls{ml}, les données doivent être structurées. Le tableau \ref{table:dataset_intro} présente un exemple de structure d'un jeu de données exploitable par un algorithme de \gls{ml}. Les données sont sous la forme de tableau où chaque ligne représente une observation (par exemple un patient) et chaque colonne représente un descripteur (nommé \textit{feature} en anglais, par exemple le rythme cardiaque, la présence d'une toux chez le patient, la présence d'antécédents de diabète dans la famille...). Enfin, la dernière colonne représente le label, que l'on souhaite prédire dans le cadre de l'entrainement de notre modèle.
-\begin{table}[!htbp]
+
+\begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|} 
  \hline
@@ -71,6 +73,7 @@ Les données sont le point critique des techniques de \gls{ml}. Elles représent
 \caption[Exemple de tableau de données fictives de patients]{\textbf{Exemple de tableau de données fictives de patients}. Les "?" indiquent l'absence d'information.}
 \label{table:dataset_intro}
 \end{table}
+
 Cette contrainte sur la structure nécessaire du jeu de données pour les algorithmes de \gls{ml} met en évidence les limites de leurs utilisations pour l'analyse de données non structurées telles que le texte libre, les données d'imagerie. Il est nécessaire en amont de structurer ces données à travers des descripteurs pertinents pour les exploiter.
 
 De plus, il est nécessaire de partitionner ce jeu de données sous forme de deux tableaux: les données d'apprentissage et les données de test. Les données d'apprentissage sont les données qui vont être utilisées par l'algorithme de \gls{ml} pour réaliser son entrainement, c'est-à-dire pour apprendre à réaliser la tâche définie (prédiction du label par exemple). Le jeu de test quant à lui contient des données qui n'ont jamais été présentées au modèle au cours de l'apprentissage. Le modèle entrainé va alors prédire le label du jeu de test et les prédictions réalisées sont comparées aux labels réels. Cela permet d'évaluer les performances d'un entrainement. Pour donner un ordre de grandeur, il est commun d'utiliser 80\% des données comme jeu d'entrainement et 20\% des données restantes comme jeu de test.
@@ -97,7 +100,8 @@ Les tâches de \textit{clustering} et de réduction de dimensionnalité sont pos
 Enfin, l'apprentissage par renforcement est moins connu et représente une méthode d'apprentissage où un agent (modèle) apprend à se comporter dans un environnement donné, recevant des pénalités et des récompenses en fonction de ses actions. Typiquement, un modèle apprenant à jouer à un jeu d'échecs représente une tâche d'apprentissage par renforcement. Dans un cadre biomédical, un système d'apprentissage par renforcement peut être utile par exemple pour un système d'examen médical intelligent qui va proposer des symptômes à vérifier chez le patient en fonction des observations déjà enregistrées. Ainsi, on a un environnement (les observations réalisées chez le patient) et des actions à réaliser par le modèle de \gls{ml} (proposer des symptômes ou examens à vérifier). Les algorithmes utilisés pour ce type d'apprentissage peuvent être des réseaux de neurones, les méthodes de \textit{Q-learning} ou encore les systèmes de classeurs.
 
 La figure \ref{fig:ml-landscape} représente schématiquement la classification des tâches, des modes d'apprentissages et des différents cas d'applications et algorithmes associés.
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=1\textwidth]{figures/ml_landscape.png}
  \caption[Schéma des méthodes de machine-learning]{\textbf{Schéma de la classification des tâches, des modes d'apprentissage et des différents cas d'applications et algorithmes associés en \textit{machine-learning}}. Il y a trois grands types d'apprentissage en machine-learning: l'apprentissage supervisé, non supervisé et par renforcement. Le diagnostic de patient par machine-learning est une tâche de classification par apprentissage supervisé.}
@@ -117,7 +121,8 @@ Appliqué au \textit{machine-learning}, C représente alors les points de donné
 Les récentes recherches en \gls{ia} ont amené à l'émergence du domaine d'\gls{xai}. L'\gls{xai} cherche à concevoir des méthodes pour rendre les modèles d'\gls{ia} et de \gls{ml} plus transparents et explicables, ce qui est critique dans le cadre de l'application de ces modèles dans des domaines à haut risque, comme le domaine médical (\cite{arrieta_explainable_2019}). L'objectif est donc de concevoir des méthodes de \gls{ml} dont on est capable de comprendre et d'évaluer les prédictions de manière intelligible.
 
 La figure \ref{fig:xai-research} présente le concept de compromis entre les performances des algorithmes et leur niveau d'explicabilité. De manière générale, plus un algorithme est performant d'un point de vue prédictif, moins il est explicable. Dès lors, le domaine de l'\gls{xai} va chercher : (i) à améliorer l'explicabilité des algorithmes performants et peu explicables ou (ii) à améliorer les performances des modèles les plus explicables.
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=1\textwidth]{figures/xai-research.png}
  \caption[Compromis entre interprétabilité et performances des algo de ML]{\textbf{Compromis entre interprétabilité du modèle et performance d'algorithmes de ML.} Représentation de la zone où réside le potentiel d'amélioration des techniques et outils d'IA explicable (xAI) (\cite{arrieta_explainable_2019})}
@@ -131,7 +136,8 @@ Les méthodes bayésiennes naïves reposent sur le théorème de Bayes sur les p
 
 \subsubsection{Méthodes à base d'arbres}
 Les arbres de décision sont des modèles classiques en \gls{ml}. Cette méthode cherche à produire un arbre (un graphe dirigé acyclique) où chaque nœud s'apparente à une série de questions posées sur les descripteurs des données. En fonction de la valeur de ces descripteurs, l'arbre progresse vers un sous-nœud jusqu'à la prédiction, le nœud feuille final. Cette méthode est intrinsèquement explicable, car il est facile de dessiner l'arbre et de retracer le processus de prédiction pour un point de données en suivant les nœuds comme une série de règles logiques. Par exemple, la figure \ref{fig:decision-tree} présente un exemple d'arbre de décision très simple avec trois nœuds (3 questions pour 3 descripteurs) et deux classes possibles comme prédiction (nœud feuille final rond).
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.6\textwidth]{figures/decision_tree.png}
  \caption[Exemple de schéma d'arbre de décision]{\textbf{Exemple de schéma d'arbre de décision.} Cet arbre est composé de 3 questions (3 nœuds pour 3 descripteurs, représentés par des rectangles bleus) et 2 classes (disques verts et orange).}
@@ -139,17 +145,20 @@ Les arbres de décision sont des modèles classiques en \gls{ml}. Cette méthode
 \end{figure}
 
 Une évolution des arbres de décision pour les rendre plus complexes et performants est nommée la méthode de la forêt aléatoire qui est une méthode ensembliste des arbres de décision. La figure \ref{fig:random-forest} présente le fonctionnement de la forêt aléatoire. Cela consiste à construire plusieurs arbres de décision sur des sous-ensembles des données, puis de combiner les prédictions de ces arbres. Chaque arbre de décision ainsi généré va établir une prédiction et la prédiction finale correspondra à la majorité des votes de chaque arbre. Les méthodes de \textit{boosting} (XGBoost (\cite{chen_xgboost_2016}), LGBoost (\cite{ke_lightgbm_2017}), CatBoost (\cite{prokhorenkova_catboost_2019})) sont similaires aux forêts aléatoires à la différence que chaque arbre n'est pas construit indépendamment, mais il cherche à corriger les erreurs du précédent, de manière séquentielle.
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.7\textwidth]{figures/random_forest.png}
  \caption[Schéma de fonctionnement de l'algorithme de forêt aléatoire]{\textbf{Schéma de fonctionnement de l'algorithme de forêt aléatoire}. Le jeu de données est divisé en plusieurs sous-jeux de données dans lesquels un sous-ensemble de descripteurs est conservé aléatoirement. Un arbre de décision est entrainé sur chacun de ces sous-jeux de données. La prédiction finale correspond à la majorité des prédictions de chaque arbre de décision.}
  \label{fig:random-forest}
 \end{figure}
+
 Les forêts aléatoires sont très utilisées en \gls{ml} et spécifiquement en biologie. En exemple d'application dans le domaine biomédicale, l'outil MISTIC (\textit{MISsense deleTeriousness predICtor}, \cite{chennen_mistic_2020}) développé dans notre équipe utilise des méthodes de forêts aléatoires pour calculer la pathogénicité des variants génétiques. Cependant, la forêt aléatoire et les méthodes de \textit{boosting} perdent en explicabilité. En effet, en raison du grand nombre d'arbres de décision générés, il n'est plus possible de suivre aisément le processus de prédiction suivant une suite de règles logiques pour un point de donnée. Il faut alors utiliser des méthodes d'explicabilité \textit{post-hoc} qui consistent à calculer l'importance numérique de chaque descripteur pour une prédiction donnée.
 
 \subsubsection{Systèmes de classeurs (LCS)}
 Les \gls{lcs} sont des algorithmes de \gls{ml} parmi les plus transparents et explicables (\textit{"rules-based learning"} figure \ref{fig:xai-research}, \cite{arrieta_explainable_2019}). Ces systèmes fonctionnent sur le principe d'un ensemble de règles (nommées "classeurs"), qui associent des conditions à une action (prédiction). Le tableau \ref{table:lcs-rules} présente un exemple de trois règles fictives issues de l'entrainement d'un \gls{lcs}. Une règle (ou un classeur) se présente sous la forme "SI [condition] ALORS [prédiction]". Chaque règle est associée à un poids, ce qui permet de définir une importance plus ou moins forte. Leur fonctionnement est donc similaire aux arbres de décision, mais donc les règles sont évaluées sans ordre imposé.
-\begin{table}[!htbp]
+
+\begin{table}[htbp]
 \centering
 \begin{tabular}{|l|l|c|} 
  \hline
@@ -158,8 +167,8 @@ Les \gls{lcs} sont des algorithmes de \gls{ml} parmi les plus transparents et ex
  SI éternuement ET allergique au pollen & ALORS sain & 7 \\ 
  SI temp. corporelle > 38°C & ALORS malade & 12 \\ 
  SI éternuement ET temp. corporelle = 37°C & ALORS sain & 3 \\ 
-
  \hline
+
 \end{tabular}
 \caption[Exemple de règles fictives issues de l'entrainement d'un algorithme de LCS]{\textbf{Exemple de règles fictives issues de l'entrainement d'un algorithme de LCS.} Les règles issues de l'entrainement d'un LCS sont sous la forme "SI [conditions] ALORS [prédiction]". À l'inverse de la forêt aléatoire où chaque arbre possède le même pouvoir de vote, chaque règle est associée à un poids, reflétant son importance lors du calcul de la prédiction finale.}
 \label{table:lcs-rules}

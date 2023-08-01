@@ -1,5 +1,4 @@
 \chapter{Outils informatiques et données utilisées}
-
 Dans cette thèse, nous avons développé des méthodes basées sur les \gls{ia} pour exploiter les données multimodales de patients. Pour cela, nous avons utilisé un vaste panel de ressources biologiques, d'outils informatiques et de méthodes \gls{ia}. Dans ce chapitre, nous allons décrire l'ensemble des outils et ressources utilisés pour construire nos méthodes d'analyse.
 
 \section{Données biomédicales de myopathies congénitales}
@@ -8,7 +7,7 @@ Pour développer ces méthodes, nous nous sommes basés sur des données d'image
 \subsection{Comptes rendus de biopsie de l'institut de myologie de Paris}
 La première source de données provient de l'institut de myologie de Paris. Grâce à une collaboration avec l'équipe du laboratoire d’histopathologie d'abord dirigé par Norma B. Romero puis Teresinha Evangelista, nous avons pu récupérer et utiliser 192 comptes rendus de biopsie musculaire de patients atteints de myopathies (congénitales, dystrophies ou autre), dont 138 spécifiquement atteint par des myopathies congénitales identifiées. Ces rapports sous format papier ont été scannés puis anonymisés d'abord avec un outil d'anonymisation que nous avons développé (présenté dans le chapitre \ref{chap_nlmyo}), puis vérifiés à la main. La figure \ref{fig:compte-rendu-exemple} présente la structure d'un compte rendu anonymisé de biopsie typique présent dans le jeu de données. Il y a deux types de comptes rendus, ceux qui concernent les observations en microscopie photonique et ceux qui concernent les observations en microscopie électronique. Cependant, cette structure peut varier en fonction de l'année de production du compte rendu, certains sont totalement déstructurés.
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.9\textwidth]{figures/compte_rendu_exemple.png}
  \caption[Exemple de compte rendu de biopsie]{\textbf{Exemple de compte rendu de biopsie en microscopie photonique anonymisé de l'institut de myologie de Paris}. Les comptes rendus sont structurés en trois sections: un entête avec des informations générales sur la patient, un corps de texte contenant une liste de colorations et les observations réalisées et une conclusion avec le diagnostic final et un commentaire optionnel.}
@@ -38,20 +37,24 @@ Dans le cadre de l'analyse de la base de données de \gls{impatient} et des rés
 
 \subsection{Validation croisée et évaluation des performances}
 La validation croisée (\textit{cross-validation} en anglais) est une technique d'évaluation de modèles prédictifs permettant d'avoir une estimation plus robuste et précise des métriques de performance. Cette méthode est particulièrement utile pour les jeux de données de petite taille. La figure \ref{fig:cross-val} présente schématiquement son fonctionnement. Le jeu de données initial est séparé en N sous-ensembles (nommés \textit{folds} ou bloc, ici au nombre de 5). Ensuite le modèle est entrainé sur l'ensemble des sous-ensembles à l'exception d’un, qui est utilisé comme jeu de test des performances. Ce processus est répété autant de fois qu'il y a de \textit{folds} afin que chaque \textit{fold} ait été utilisé exactement une fois comme jeu de test. Ainsi pour 5 \textit{folds}, cinq modèles sont entrainés et évalués. On peut alors calculer une performance moyenne du modèle entrainé sur l'ensemble des données, en calculant les performances moyennes des cinq modèles. Plus le nombre de \textit{folds} est important, plus cette moyenne est précise, mais c'est plus coûteux en temps et ressources de calcul, car il faut entrainer plus de modèles.
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.9\textwidth]{figures/cross-val.png}
  \caption[Schéma validation-croisée]{\textbf{Schéma du principe de la validation croisée}. Ici la valiation-croisée est réalisée en \textit{5 folds}, chaque point de donnée sera utilisé une fois dans le jeu de test et 4 fois dans 4 jeux d'entrainement (modifié de la documentation de \textit{Scikit-Learn}).}
  \label{fig:cross-val}
 \end{figure}
+
 \subsection{Recherche d'hyperparamètres}
 La recherche d'hyperparamètres est une étape importante dans le développement de modèles prédictifs pour améliorer les performances des modèles. Les hyperparamètres sont des paramètres propres à chaque algorithme, qui sont spécifiés en amont de l'entrainement et qui ne varient pas lors de l'entrainement, mais qui influent directement sur les performances du modèle. Par exemple, dans le cadre de l'entrainement d'un arbre de décision, un exemple d'hyperparamètre peut être la profondeur maximale de l'arbre ou encore la méthode de calcul de qualité d'un nœud (par exemple méthode de gini ou entropie).
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.3\textwidth]{figures/parameters_grid.png}
  \caption[Schéma rechercher hyper-paramètres]{\textbf{Schéma du principe de recherche d'hyperparamètres par grille pour 2 paramètres}. Un point rouge représente un modèle entrainé. Les courbes en abscisse et ordonnée représente les performances du modèle. Le paramètre en ordonnée n'a que très peu d'effet sur les performances, alors que les variations du paramètre en abscisse améliorent les performances du modèle.}
  \label{fig:params_grid}
 \end{figure}
+
 La recherche d'hyperparamètres revient à trouver une combinaison de paramètres optimale qui maximise les performances du modèle après entrainement. La méthode la plus classique pour cela est l'optimisation par grille. À partir d'un ensemble de valeurs possibles pour chaque paramètre, on va entrainer et tester les performances du modèle pour chaque combinaison de valeurs et sélectionner la combinaison de valeurs la plus performante. La figure \ref{fig:params_grid} présente un exemple théorique d'optimisation par grille pour deux paramètres. Pour chacun des paramètres, 3 valeurs sont possibles, c'est donc un total de 9 modèles qui sont entrainés et testés. On peut alors mesurer l'impact de chaque paramètre sur les performances finales du modèle pour trouver le paramètre le plus important et sa valeur optimale.
 D'autres méthodes moins naïves et moins coûteuses que la grille existent pour la recherche d'hyperparamètres telle que l'approche bayésienne utilisée par la bibliothèque de code \textit{Optuna} (\cite{akiba_optuna_2019},\url{https://optuna.org/}) qui permet de trouver une combinaison optimale plus rapidement.
 
@@ -60,18 +63,21 @@ Les systèmes de classeurs sont une famille d'algorithmes de \gls{ml} considér�
 
 \subsection{Streamline: un \textit{pipeline} d'entrainement et de comparaison de modèles ML}
 Pour entrainer le modèle de classification le plus performant possible dans le cadre de l'analyse de la base de données d'\gls{impatient}, nous avons utilisé le \textit{pipeline} d'entrainement et de comparaison de modèles de \gls{ml} nommé \textit{Streamline} (\cite{urbanowicz_streamline_2023}). La figure \ref{fig:streamline} (\cite{urbanowicz_streamline_2023}) présente son fonctionnement. Il y a 4 étapes principales. L'étape 1 (modules 1 et 2) consiste en la lecture, exploration statistique et préparation des données. L'étape 2 (modules 3 et 4) consiste au calcul de l'importance de chaque annotation (comprendre ici : \textit{feature}) et en la sélection des annotations les plus pertinentes pour la classification. L'étape 3 (module 5) consiste à l'optimisation et l'entrainement de 16 algorithmes de \gls{ml} variés et l'évaluation des performances des modèles issus de cet entrainement. Finalement, l'étape 4 (modules 6, 7, 8 et 9) correspond à la phase de post-traitement, où seront générés les figures de comparaison des performances des modèles et le nettoyage des fichiers. STREAMLINE n'est pour l'instant disponible que pour faire de la classification binaire. Nous nous intéressons à un problème de classification multi-classe (prédiction de diagnostic), donc nous avons modifié le pipeline pour le rendre compatible avec nos données. Le code du pipeline modifié est accessible à l'adresse \url{https://github.com/lambda-science/STREAMLINE}.
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=1\textwidth]{figures/STREAMLINE_paper_lightcolor.png}
  \caption[Pipeline STREAMLINE]{\textbf{Schéma du pipeline STREAMLINE}. Ce pipeline est divisé en 4 parties principales: (i) traitement des données, (ii) calcul de l'importance et sélection des descripteurs, (iii) entrainnement et optimisation des modèles, (iv) post-traitement et comparaison des modèles. (\cite{urbanowicz_streamline_2023})}
  \label{fig:streamline}
 \end{figure}
+
 \subsection{Métriques de performance}
 Pour évaluer les performances de nos modèles, nous avons utilisé plusieurs métriques. Dans le cadre d'une classification multi-classe et déséquilibrée, la mesure de l'exactitude de classification (\textit{accuracy}) n'est pas suffisante pour obtenir une bonne représentation des performances des modèles. Ainsi nous mesurons aussi l'exactitude équilibrée (\textit{balanced accuracy}), le score F1, score F1 macro, la spécificité et le coefficient de corrélation de Matthew. L'ensemble de ces métriques de performance, décrites dans la section suivante, sont calculées à partir de la matrice de confusion.
 
 \subsubsection{Matrice de confusion}
 La matrice de confusion est une matrice en deux dimensions qui compare les prédictions d'un modèle par rapport aux labels réels des données. Par exemple pour une classification en 3 classes, une matrice de confusion de taille (3x3) est produite. La diagonale (haut gauche vers bas droit) représente l'ensemble des prédictions correctes (vrais positifs et vrais négatifs) c'est-à-dire les points pour lesquels la prédiction est en accord avec le label réel. Les autres cases représentent l'ensemble des prédictions incorrectes (faux positifs ou faux négatifs). La figure \ref{fig:confusion-example} représente un exemple de matrice de confusion pour une classification binaire en 2 classes.
-\begin{figure}[!htbp]
+
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=0.5\textwidth]{figures/confusion_example.png}
  \caption[Exemple de matrice de confusion binaire]{\textbf{Exemple de matrice de confusion binaire.} Pour une classification à deux classes la matrices de confusion est composée de vraispositif (VP), vrais négatifs (VN), faux positifs (FP), faux négatifs (VN).}
@@ -89,7 +95,7 @@ L'exactitude équilibrée quant à elle est utile dans le cadre d'un jeu de donn
 \subsubsection{Précision, sensibilité, spécificité et Score F1}
 La figure \ref{fig:prec_recall_spec} présente les notions de précision, sensibilité (rappel) et spécificité en prenant comme exemple l'interprétation d'un test COVID. Pour un test COVID, la précision représente la proportion de patients réellement positifs parmi des tests positifs. Le sensibilité (ou rappel) représente la proportion de tests positifs parmi l'ensemble des personnes positives à la COVID. Enfin la spécificité mesure la proportion de tests réellement négatifs parmi l'ensemble des patients négatifs au COVID.
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
  \centering
  \includegraphics[width=1\textwidth]{figures/prec_recall.png}
  \caption[Précision, sensibilité et spécificité]{\textbf{Schéma de la notion de précision, sensibilité et spécificité}. L'exemple d'un test de dépistage COVID est utilisé pour illustrer l'utilité des différentes mesures pour évaluer les performances du test (modifiée de Wikipédia "Précision et rappel").}
@@ -151,7 +157,6 @@ Comme pour les modèles génératifs, nous avons utilisé deux modèles, un par 
 Concernant le modèle auto-hébergé, nous avons choisi d'utiliser le modèle nommé Instructor (\cite{su_one_2023}, \url{https://huggingface.co/hkunlp/instructor-large}). Ce modèle est parmi les plus performants, classé 2e sur 75 modèles testés (\cite{muennighoff_mteb_2022}), de plus il comporte dans son jeu d'entrainement des données issues de textes médicaux, ce qui permet d'espérer de bonnes performances pour nos comptes rendus de biopsies. 
 
 \subsection{Interaction avec les modèles linguistiques de grande taille avec LangChain}
-
 Face à la diversité des \gls{llms} génératifs, \gls{llms} d'\textit{embedding} et des outils associés, il est nécessaire d'avoir un outil qui uniformise la façon d'interagir avec ces modèles. C'est l'objectif de la bibliothèque de code nommée LangChain (\cite{chase_harrison_langchain_2022}) que nous avons utilisé à travers \gls{nlmyo}. Cette bibliothèque de code permet d'unifier la façon d'interagir avec les modèles auto-hébergés et les différents fournisseurs externes, ce qui permet d'accélérer la phase d'exploration des performances des modèles et le développement d'outils basés sur les \gls{llms}. 
 
 En plus des interactions avec les modèles de langage, LangChain met à disposition des outils pour interagir avec des bases de données optimisées pour le stockage et la requête de vecteurs numériques (résultats des modèles d'\textit{embedding}). Ainsi dans \gls{nlmyo} nous avons utilisé la base de données de vecteurs nommée ChromaDB (\url{https://www.trychroma.com/}). Les bases de données de vecteurs sont des bases de données qui permettent de stocker des documents ainsi que leurs résultats d'\textit{embedding}. Ces bases sont optimisées pour le calcul de similarité entre un vecteur requête et une grande base de données de vecteurs. Cela permet par exemple de construire des moteurs de recherche de documents, dans notre cas il s'agit d'un moteur de recherche de comptes rendus de biopsie requêtables par symptômes.
